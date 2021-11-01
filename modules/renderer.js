@@ -1,0 +1,61 @@
+import {
+  BoxBufferGeometry,
+  Mesh,
+  MeshNormalMaterial,
+  sRGBEncoding,
+  PerspectiveCamera,
+  Scene,
+  WebGLRenderer,
+} from "../third_party/three.module.js";
+import { OrbitControls } from "../third_party/OrbitControls.js";
+
+const renderer = new WebGLRenderer({
+  antialias: true,
+  preserveDrawingBuffer: true,
+});
+
+document.body.append(renderer.domElement);
+renderer.outputEncoding = sRGBEncoding;
+renderer.setPixelRatio(window.devicePixelRatio);
+// const gl = renderer.getContext();
+// gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+
+const scene = new Scene();
+
+const camera = new PerspectiveCamera(45, 1, 0.1, 100);
+camera.position.set(2, 2, 2);
+camera.lookAt(scene.position);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+
+function resize() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+
+function render() {
+  for (const fn of updates) {
+    fn();
+  }
+  renderer.render(scene, camera);
+  renderer.setAnimationLoop(render);
+}
+
+const updates = [];
+
+function addUpdate(fn) {
+  updates.push(fn);
+}
+
+window.addEventListener("resize", () => resize());
+
+// const mesh = new Mesh(new BoxBufferGeometry(1, 1, 1), new MeshNormalMaterial());
+// scene.add(mesh);
+
+resize();
+render();
+
+export { renderer, scene, addUpdate, camera };
