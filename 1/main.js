@@ -1,5 +1,10 @@
-import { scene, renderer, addUpdate, camera } from "../modules/renderer.js";
-import noise from "../third_party/perlin.js";
+import {
+  scene,
+  controls,
+  renderer,
+  addUpdate,
+  camera,
+} from "../modules/renderer.js";
 import {
   BufferGeometry,
   Mesh,
@@ -7,9 +12,11 @@ import {
   ExtrudeGeometry,
   Shape,
   BufferAttribute,
+  Vector2,
   Vector3,
   MeshBasicMaterial,
   Color,
+  Raycaster,
   DirectionalLightHelper,
   DoubleSide,
   MeshPhysicalMaterial,
@@ -18,10 +25,24 @@ import {
   CameraHelper,
   PCFShadowMap,
   Box3,
+  PlaneBufferGeometry,
 } from "../third_party/three.module.js";
 import { hslToRgb, rgbToHsl } from "../modules/color.js";
 import { RectAreaLightUniformsLib } from "../third_party/RectAreaLightUniformsLib.js";
 import { adjustOrthoToBB } from "../modules/frustum.js";
+import { clamp } from "../modules/Maf.js";
+//import { CCapture } from "../ccapture2/ccapture.js";
+import { MapControls } from "../third_party/OrbitControls.js";
+
+// const capturer = new CCapture({
+//   format: "webm",
+//   quality: 1,
+//   timewarp: window.timewarp,
+//   timeLimit: 30,
+// });
+
+camera.position.set(0, 0, 6);
+camera.lookAt(scene.position);
 
 RectAreaLightUniformsLib.init();
 
@@ -74,7 +95,7 @@ class Triangle {
 
     const a = Math.abs(this.w * 2) + Math.abs(this.h * 2);
 
-    if (a > 0.2 && Math.random() < a * 2 * Math.random()) {
+    if (a > 0.2 && Math.random() < Math.random() / 8 + a / 1.5) {
       this.subdivide();
     } else {
       triangles.push(this);
@@ -123,7 +144,7 @@ class Triangle {
 
     const extrudeSettings = {
       steps: 1,
-      depth: 0.5,
+      depth: 0.1,
       bevelEnabled: true,
       bevelThickness,
       bevelSize,
@@ -142,7 +163,7 @@ class Triangle {
     });
     const mesh = new Mesh(geometry, material);
     mesh.position.copy(this.center);
-
+    this.mesh = mesh;
     return mesh;
   }
 
@@ -215,6 +236,21 @@ for (const triangle of triangles) {
   }
 }
 
+const raycaster = new Raycaster();
+const mouse = new Vector2();
+const plane = new Mesh(
+  new PlaneBufferGeometry(100, 100),
+  new MeshNormalMaterial()
+);
+scene.add(plane);
+
+function onMouseMove(event) {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+}
+
+window.addEventListener("pointermove", onMouseMove, false);
+
 const helper = new CameraHelper(directionalLight.shadow.camera);
 // scene.add(helper);
 const helper2 = new CameraHelper(directionalLight2.shadow.camera);
@@ -231,11 +267,42 @@ helper.update();
 helper2.update();
 helper3.update();
 
-function update() {
+const center = new Vector3();
+controls.enabled = false;
+
+async function update() {
+  const t = performance.now();
+
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObject(plane);
+
+  let point;
+  if (intersects.length) {
+    point = intersects[0].point;
+  }
+
+  const point2 = new Vector3(2 * Math.cos(t / 800), 2 * Math.sin(t / 1100), 0);
+
+  for (let i = 0; i < triangles.length; i++) {
+    const d1 = clamp(triangles[i].center.distanceTo(point), 0.000001, 10000000);
+    const d2 = clamp(
+      triangles[i].center.distanceTo(point2),
+      0.000001,
+      10000000
+    );
+    const s = clamp(1 / d1 ** 20 + 1 / d2 ** 20, 0, 1);
+    triangles[i].mesh.scale.set(s, s, 1);
+    // triangles[i].mesh.rotation.z = ((Math.PI / 3) * t) / 3000;
+  }
   // //console.log("update");
   // for (const triangle of triangles) {
   //   triangle.mesh.lookAt(camera.position);
   // }
+
+  // await capturer.capture(renderer.domElement);
+  // capturer.step();
 }
 
 addUpdate(update);
+
+// await capturer.start();

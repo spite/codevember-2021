@@ -36,9 +36,9 @@ function resize() {
   camera.updateProjectionMatrix();
 }
 
-function render() {
+async function render() {
   for (const fn of updates) {
-    fn();
+    await fn();
   }
   renderer.render(scene, camera);
   renderer.setAnimationLoop(render);
@@ -58,4 +58,4 @@ window.addEventListener("resize", () => resize());
 resize();
 render();
 
-export { renderer, scene, addUpdate, camera };
+export { renderer, scene, addUpdate, controls, camera };
