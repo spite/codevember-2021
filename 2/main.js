@@ -20,19 +20,19 @@ import {
   Vector2,
 } from "../third_party/three.module.js";
 import { ShaderTexture } from "../modules/ShaderTexture.js";
-import { CCapture } from "../ccapture2/ccapture.js";
+// import { CCapture } from "../ccapture2/ccapture.js";
 import { GradientLinear } from "../modules/gradient-linear.js";
 
 import { shader as noise3d } from "../shaders/noise3d.js";
 import { shader as aastep } from "../shaders/aastep.js";
 import { shader as hsl } from "../shaders/hsl.js";
 
-const capturer = new CCapture({
-  format: "webm",
-  quality: 1,
-  timewarp: window.timewarp,
-  timeLimit: 30,
-});
+// const capturer = new CCapture({
+//   format: "webm",
+//   quality: 1,
+//   timewarp: window.timewarp,
+//   timeLimit: 30,
+// });
 
 // const gl = renderer.getContext();
 // gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
@@ -239,24 +239,24 @@ const meshes = [];
 //   "#7B5614",
 //   "#F7F1AC",
 // ];
-// const palette = [
-//   "#F62D62",
-//   "#FFFFFF",
-//   "#FDB600",
-//   "#F42D2D",
-//   "#544C98",
-//   "#ECACBC",
-// ];
 const palette = [
-  "#FEB019",
-  "#F46002",
-  "#E1E7F1",
-  "#0A1D69",
-  "#138FE2",
-  "#0652C4",
-  "#D23401",
-  "#B0A12F",
+  "#F62D62",
+  "#FFFFFF",
+  "#FDB600",
+  "#F42D2D",
+  "#544C98",
+  "#ECACBC",
 ];
+// const palette = [
+//   "#FEB019",
+//   "#F46002",
+//   "#E1E7F1",
+//   "#0A1D69",
+//   "#138FE2",
+//   "#0652C4",
+//   "#D23401",
+//   "#B0A12F",
+// ];
 
 const gradient = new GradientLinear(palette);
 
@@ -283,6 +283,8 @@ for (let i = 0; i < layers; i++) {
     side: DoubleSide,
     glslVersion: GLSL3,
     transparent: true,
+    depthTest: false,
+    depthWrite: false,
   });
   const mesh = new Mesh(new PlaneBufferGeometry(1, 1), material);
   mesh.position.z = layers / 40 - i / (2 * layers);
@@ -335,8 +337,8 @@ async function update() {
     noiseTexture.render();
   }
 
-  await capturer.capture(renderer.domElement);
-  capturer.step();
+  // await capturer.capture(renderer.domElement);
+  // capturer.step();
 }
 
 function resizeSketch(w, h, dPR) {
@@ -348,11 +350,11 @@ function resizeSketch(w, h, dPR) {
 addUpdate(update);
 addResize(resizeSketch);
 
-async function capture() {
-  await capturer.start();
-  return capturer;
-}
+// async function capture() {
+//   await capturer.start();
+//   return capturer;
+// }
 
 resize();
 
-window.capture = capture;
+// window.capture = capture;
