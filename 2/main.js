@@ -229,7 +229,7 @@ for (let i = 0; i < layers; i++) {
       time: { value: 0 },
       layer: { value: i / (4 * layers) },
       scale: { value: 0.95 },
-      lightPosition: { value: new Vector2() },
+      lightPosition: { value: new Vector2(0, 0.7) },
       color: { value: new Color() },
       seed: { value: seed },
       resolution: { value: new Vector2(window.innerWidth, window.innerHeight) },
@@ -260,7 +260,7 @@ function randomizeColors() {
 }
 
 const raycaster = new Raycaster();
-const mouse = new Vector2();
+const mouse = new Vector2(100, 100);
 const plane = new Mesh(
   new PlaneBufferGeometry(100, 100),
   new MeshNormalMaterial()
@@ -276,15 +276,27 @@ function onMouseMove(event) {
 window.addEventListener("pointermove", onMouseMove, false);
 
 let running = true;
+
+function randomize() {
+  randomizeColors();
+  noiseShader.uniforms.seed.value = Math.random() * 1000;
+}
+
+document.querySelector("#randomizeBtn").addEventListener("click", (e) => {
+  randomize();
+});
+
+document.querySelector("#pauseBtn").addEventListener("click", (e) => {
+  running = !running;
+});
+
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
     running = !running;
-    c;
   }
 
   if (e.code === "KeyR") {
-    randomizeColors();
-    noiseShader.uniforms.seed.value = Math.random() * 1000;
+    randomize();
   }
 });
 
