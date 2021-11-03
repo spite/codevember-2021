@@ -39,3 +39,21 @@ canvas {
   font-family: "Montserrat", sans-serif;
   font-size: 1rem;
 }
+
+#info p {
+  margin-bottom: 1em;
+}
+
+button {
+  border: 1px solid white;
+  outline: none;
+  background: none;
+  border-radius: 3px;
+  padding: 0.5em 1em;
+  margin-right: 0.5em;
+  pointer-events: auto;
+}
+
+button:hover {
+  background-color: gray;
+}
