@@ -27,6 +27,7 @@ canvas {
   pointer-events: none;
   z-index: 10;
   padding: 2em;
+  text-shadow: 1px 1px black;
 }
 
 #info h1 {
@@ -56,4 +57,8 @@ button {
 
 button:hover {
   background-color: gray;
+}
+
+#info a {
+  pointer-events: auto;
 }
