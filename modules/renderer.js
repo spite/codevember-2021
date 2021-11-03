@@ -34,6 +34,11 @@ function resize() {
   renderer.setSize(w, h);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
+  const dPR = renderer.getPixelRatio();
+
+  for (const fn of resizes) {
+    fn(w, h, dPR);
+  }
 }
 
 async function render() {
@@ -50,6 +55,12 @@ function addUpdate(fn) {
   updates.push(fn);
 }
 
+const resizes = [];
+
+function addResize(fn) {
+  resizes.push(fn);
+}
+
 window.addEventListener("resize", () => resize());
 
 // const mesh = new Mesh(new BoxBufferGeometry(1, 1, 1), new MeshNormalMaterial());
@@ -58,4 +69,4 @@ window.addEventListener("resize", () => resize());
 resize();
 render();
 
-export { renderer, scene, addUpdate, controls, camera };
+export { renderer, scene, addUpdate, addResize, controls, camera, resize };
