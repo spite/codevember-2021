@@ -4,6 +4,8 @@ import {
   renderer,
   addUpdate,
   camera,
+  addResize,
+  resize,
 } from "../modules/renderer.js";
 import {
   Mesh,
@@ -31,6 +33,9 @@ const capturer = new CCapture({
   timewarp: window.timewarp,
   timeLimit: 30,
 });
+
+// const gl = renderer.getContext();
+// gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
 
 renderer.setClearColor(0x202020, 1);
 camera.position.set(0, 0, 2);
@@ -157,9 +162,9 @@ void main() {
   if(vUv.y<.01) n = 1.;
   if(vUv.y>1.-.01) n = 1.;
 
-  if(n>.5) {
-    discard;
-  }
+  // if(n>.5) {
+  //   discard;
+  // }
 
   // vec3 lightPos = vec3(10.*cos(10.*time), 10.*sin(10.*time), 10.);
   vec3 lightPos = vec3(lightPosition.xy, 10.);
@@ -184,14 +189,22 @@ void main() {
   float aspect = size.x / size.y;
   vec4 bkg = texture(paper, vUv * vec2(aspect, 1.));
   
+  float hue = texture(noise, vUv/2.).r;
+
   vec3 c = bkg.rgb * (.5 + .5 * color);
   vec3 hc = rgb2hsv(c);
+  // hc.y += hue/4.;
   hc.z += b/10.;
   hc.y += (1.-d);
   hc.z -= (1.-d);
+  hc.x = clamp(hc.x, 0., 1.);
+  hc.y = clamp(hc.y, 0., 1.);
+  hc.z = clamp(hc.z, 0., 1.);
   c = hsv2rgb(hc);
 
-  fragColor = vec4(c, 1.);
+  // c= vec3(hue);
+
+  fragColor = vec4(c, 1.-n);
 }`;
 
 const loader = new TextureLoader();
@@ -208,15 +221,15 @@ const meshes = [];
 //   "#FEC194",
 //   "#FE9F5B",
 // ];
-const palette = [
-  "#FF6D00",
-  "#FBF8EB",
-  "#008B99",
-  "#F8E1A6",
-  "#FDA81F",
-  "#B80A01",
-  "#480D07",
-];
+// const palette = [
+//   "#FF6D00",
+//   "#FBF8EB",
+//   "#008B99",
+//   "#F8E1A6",
+//   "#FDA81F",
+//   "#B80A01",
+//   "#480D07",
+// ];
 // const palette = [
 //   "#EF2006",
 //   "#350000",
@@ -234,16 +247,16 @@ const palette = [
 //   "#544C98",
 //   "#ECACBC",
 // ];
-// const palette = [
-//   "#FEB019",
-//   "#F46002",
-//   "#E1E7F1",
-//   "#0A1D69",
-//   "#138FE2",
-//   "#0652C4",
-//   "#D23401",
-//   "#B0A12F",
-// ];
+const palette = [
+  "#FEB019",
+  "#F46002",
+  "#E1E7F1",
+  "#0A1D69",
+  "#138FE2",
+  "#0652C4",
+  "#D23401",
+  "#B0A12F",
+];
 
 const gradient = new GradientLinear(palette);
 
@@ -269,6 +282,7 @@ for (let i = 0; i < layers; i++) {
     fragmentShader: fs,
     side: DoubleSide,
     glslVersion: GLSL3,
+    transparent: true,
   });
   const mesh = new Mesh(new PlaneBufferGeometry(1, 1), material);
   mesh.position.z = layers / 40 - i / (2 * layers);
@@ -325,11 +339,20 @@ async function update() {
   capturer.step();
 }
 
+function resizeSketch(w, h, dPR) {
+  for (const mesh of meshes) {
+    mesh.material.uniforms.lightPosition.value.set(w * dPR, h * dPR);
+  }
+}
+
 addUpdate(update);
+addResize(resizeSketch);
 
 async function capture() {
   await capturer.start();
   return capturer;
 }
+
+resize();
 
 window.capture = capture;
