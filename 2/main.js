@@ -18,10 +18,18 @@ import {
   MeshNormalMaterial,
   FloatType,
   Vector2,
+  Color,
 } from "../third_party/three.module.js";
 import { ShaderTexture } from "../modules/ShaderTexture.js";
 // import { CCapture } from "../ccapture2/ccapture.js";
 import { GradientLinear } from "../modules/gradient-linear.js";
+import {
+  warm,
+  natural,
+  natural2,
+  circus,
+  seaside,
+} from "../modules/palettes.js";
 
 import { shader as noise3d } from "../shaders/noise3d.js";
 import { shader as aastep } from "../shaders/aastep.js";
@@ -146,8 +154,15 @@ ${noise3d}
 ${aastep}
 ${hsl}
 
+vec2 rotate(vec2 v, float a) {
+	float s = sin(a);
+	float c = cos(a);
+	mat2 m = mat2(c, -s, s, c);
+	return m * v;
+}
+
 float sampleNoise(vec2 uv, float layer) {
-  float n = texture(noise, uv).r;
+  float n = texture(noise, rotate((uv-.5), layer*1.)+.5).r;
   n -= layer;
   n = aastep(n, .5);
   return n;
@@ -213,68 +228,16 @@ const paper = loader.load("../assets/Watercolor_ColdPress.jpg");
 const layers = 10;
 const meshes = [];
 
-// const palette = [
-//   "#FF2000",
-//   "#FF5900",
-//   "#FE9100",
-//   "#FEFDFC",
-//   "#FEC194",
-//   "#FE9F5B",
-// ];
-// const palette = [
-//   "#FF6D00",
-//   "#FBF8EB",
-//   "#008B99",
-//   "#F8E1A6",
-//   "#FDA81F",
-//   "#B80A01",
-//   "#480D07",
-// ];
-// const palette = [
-//   "#EF2006",
-//   "#350000",
-//   "#A11104",
-//   "#ED5910",
-//   "#F1B52E",
-//   "#7B5614",
-//   "#F7F1AC",
-// ];
-const palette = [
-  "#F62D62",
-  "#FFFFFF",
-  "#FDB600",
-  "#F42D2D",
-  "#544C98",
-  "#ECACBC",
-];
-// const palette = [
-//   "#FEB019",
-//   "#F46002",
-//   "#E1E7F1",
-//   "#0A1D69",
-//   "#138FE2",
-//   "#0652C4",
-//   "#D23401",
-//   "#B0A12F",
-// ];
-
-const gradient = new GradientLinear(palette);
-
 for (let i = 0; i < layers; i++) {
-  const r = Math.random();
-  const g = Math.random();
-  const b = Math.random();
-
   const material = new RawShaderMaterial({
     uniforms: {
       paper: { value: paper },
       noise: { value: noiseTexture.texture },
       time: { value: 0 },
       layer: { value: i / (4 * layers) },
-      scale: { value: 1 },
+      scale: { value: 0.95 },
       lightPosition: { value: new Vector2() },
-      // color: { value: new Color(r, g, b) },
-      color: { value: gradient.getAt(Math.random()) },
+      color: { value: new Color() },
       seed: { value: seed },
       resolution: { value: new Vector2(window.innerWidth, window.innerHeight) },
     },
@@ -290,6 +253,17 @@ for (let i = 0; i < layers; i++) {
   mesh.position.z = layers / 40 - i / (2 * layers);
   scene.add(mesh);
   meshes.push(mesh);
+}
+randomizeColors();
+
+function randomizeColors() {
+  const palettes = [warm, natural, natural2, circus, seaside];
+  const palette = palettes[Math.floor(Math.random() * palettes.length)];
+  const gradient = new GradientLinear(palette);
+  for (const mesh of meshes) {
+    const c = gradient.getAt(Math.random());
+    mesh.material.uniforms.color.value.set(c);
+  }
 }
 
 const raycaster = new Raycaster();
@@ -312,6 +286,11 @@ let running = true;
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
     running = !running;
+  }
+
+  if (e.code === "KeyR") {
+    randomizeColors();
+    noiseShader.uniforms.seed.value = Math.random() * 1000;
   }
 });
 
