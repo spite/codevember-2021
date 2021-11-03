@@ -247,7 +247,7 @@ for (let i = 0; i < layers; i++) {
   scene.add(mesh);
   meshes.push(mesh);
 }
-randomizeColors();
+randomize();
 
 function randomizeColors() {
   const palettes = [warm, natural, natural2, circus, seaside];
@@ -280,6 +280,7 @@ let running = true;
 function randomize() {
   randomizeColors();
   noiseShader.uniforms.seed.value = Math.random() * 1000;
+  noiseTexture.render();
 }
 
 document.querySelector("#randomizeBtn").addEventListener("click", (e) => {
