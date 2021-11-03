@@ -21,7 +21,7 @@ import {
   Color,
 } from "../third_party/three.module.js";
 import { ShaderTexture } from "../modules/ShaderTexture.js";
-// import { CCapture } from "../ccapture2/ccapture.js";
+// import { capture } from "../modules/capture.js";
 import { GradientLinear } from "../modules/gradient-linear.js";
 import {
   warm,
@@ -34,13 +34,6 @@ import {
 import { shader as noise3d } from "../shaders/noise3d.js";
 import { shader as aastep } from "../shaders/aastep.js";
 import { shader as hsl } from "../shaders/hsl.js";
-
-// const capturer = new CCapture({
-//   format: "webm",
-//   quality: 1,
-//   timewarp: window.timewarp,
-//   timeLimit: 30,
-// });
 
 // const gl = renderer.getContext();
 // gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
@@ -286,6 +279,7 @@ let running = true;
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
     running = !running;
+    c;
   }
 
   if (e.code === "KeyR") {
@@ -316,8 +310,7 @@ async function update() {
     noiseTexture.render();
   }
 
-  // await capturer.capture(renderer.domElement);
-  // capturer.step();
+  capture(renderer.domElement);
 }
 
 function resizeSketch(w, h, dPR) {
@@ -329,11 +322,4 @@ function resizeSketch(w, h, dPR) {
 addUpdate(update);
 addResize(resizeSketch);
 
-// async function capture() {
-//   await capturer.start();
-//   return capturer;
-// }
-
 resize();
-
-// window.capture = capture;
