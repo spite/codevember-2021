@@ -310,7 +310,7 @@ async function update() {
     noiseTexture.render();
   }
 
-  capture(renderer.domElement);
+  //capture(renderer.domElement);
 }
 
 function resizeSketch(w, h, dPR) {
