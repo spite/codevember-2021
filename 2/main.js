@@ -200,14 +200,50 @@ const paper = loader.load("../assets/Watercolor_ColdPress.jpg");
 const layers = 10;
 const meshes = [];
 
+// const palette = [
+//   "#FF2000",
+//   "#FF5900",
+//   "#FE9100",
+//   "#FEFDFC",
+//   "#FEC194",
+//   "#FE9F5B",
+// ];
 const palette = [
-  "#FF2000",
-  "#FF5900",
-  "#FE9100",
-  "#FEFDFC",
-  "#FEC194",
-  "#FE9F5B",
+  "#FF6D00",
+  "#FBF8EB",
+  "#008B99",
+  "#F8E1A6",
+  "#FDA81F",
+  "#B80A01",
+  "#480D07",
 ];
+// const palette = [
+//   "#EF2006",
+//   "#350000",
+//   "#A11104",
+//   "#ED5910",
+//   "#F1B52E",
+//   "#7B5614",
+//   "#F7F1AC",
+// ];
+// const palette = [
+//   "#F62D62",
+//   "#FFFFFF",
+//   "#FDB600",
+//   "#F42D2D",
+//   "#544C98",
+//   "#ECACBC",
+// ];
+// const palette = [
+//   "#FEB019",
+//   "#F46002",
+//   "#E1E7F1",
+//   "#0A1D69",
+//   "#138FE2",
+//   "#0652C4",
+//   "#D23401",
+//   "#B0A12F",
+// ];
 
 const gradient = new GradientLinear(palette);
 
@@ -256,6 +292,13 @@ function onMouseMove(event) {
 
 window.addEventListener("pointermove", onMouseMove, false);
 
+let running = true;
+window.addEventListener("keydown", (e) => {
+  if (e.code === "Space") {
+    running = !running;
+  }
+});
+
 async function update() {
   const t = performance.now() / 10000;
 
@@ -273,8 +316,10 @@ async function update() {
     }
   }
 
-  noiseTexture.shader.uniforms.time.value = t;
-  noiseTexture.render();
+  if (running) {
+    noiseTexture.shader.uniforms.time.value = t;
+    noiseTexture.render();
+  }
 
   await capturer.capture(renderer.domElement);
   capturer.step();
