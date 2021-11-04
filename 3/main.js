@@ -122,6 +122,8 @@ const finalTexture = new ShaderTexture(renderer, finalShader, 1, 1);
 camera.position.set(20, 20, 20);
 const boids = [];
 
+// https://p5js.org/examples/simulate-flocking.html
+
 class Boid {
   constructor() {
     this.position = new Vector3();
@@ -170,6 +172,7 @@ class Boid {
         count++;
       }
     }
+    // this would have the idea: to also avoid the particles in the trails
     // for (const trail of trails) {
     //   for (const p of trail.points) {
     //     const d = this.position.distanceTo(p);
