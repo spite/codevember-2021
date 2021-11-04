@@ -419,7 +419,7 @@ function render() {
 
   finalTexture.render(true);
 
-  capture(renderer.domElement);
+  // capture(renderer.domElement);
 
   renderer.setAnimationLoop(render);
 }
