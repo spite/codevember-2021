@@ -6,6 +6,7 @@ import {
   camera,
   addResize,
   resize,
+  render,
 } from "../modules/renderer.js";
 import {
   Mesh,
@@ -336,3 +337,4 @@ addUpdate(update);
 addResize(resizeSketch);
 
 resize();
+render();

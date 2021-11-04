@@ -2,6 +2,7 @@ import {
   scene,
   controls,
   renderer,
+  render,
   addUpdate,
   camera,
 } from "../modules/renderer.js";
@@ -304,5 +305,5 @@ async function update() {
 }
 
 addUpdate(update);
-
+render();
 // await capturer.start();

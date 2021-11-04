@@ -53,6 +53,7 @@ button {
   padding: 0.5em 1em;
   margin-right: 0.5em;
   pointer-events: auto;
+  text-shadow: 1px 1px black;
 }
 
 button:hover {

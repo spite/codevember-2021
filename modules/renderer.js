@@ -67,6 +67,14 @@ window.addEventListener("resize", () => resize());
 // scene.add(mesh);
 
 resize();
-render();
 
-export { renderer, scene, addUpdate, addResize, controls, camera, resize };
+export {
+  renderer,
+  scene,
+  addUpdate,
+  addResize,
+  controls,
+  camera,
+  resize,
+  render,
+};
