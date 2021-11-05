@@ -5,8 +5,32 @@
   margin: 0;
   padding: 0;
   font-family: "Open Sans", sans-serif;
-  color: white;
+}
+
+html {
   font-size: 14px;
+}
+
+#index {
+  padding: 2em;
+  color: #202020;
+  font-size: 1rem;
+}
+
+#index ul {
+  list-style-type: none;
+}
+
+#index h1 {
+  margin-bottom: 1em;
+}
+
+#index a {
+  text-decoration: none;
+}
+
+#index a:hover {
+  font-weight: bold;
 }
 
 canvas {
@@ -27,7 +51,12 @@ canvas {
   pointer-events: none;
   z-index: 10;
   padding: 2em;
+  color: white;
   text-shadow: 1px 1px black;
+}
+
+#info a {
+  color: inherit;
 }
 
 #info h1 {
