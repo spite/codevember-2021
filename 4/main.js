@@ -4,6 +4,7 @@ import {
   renderer,
   addUpdate,
   camera,
+  addResize,
 } from "../modules/renderer.js";
 import { getFBO } from "../modules/fbo.js";
 import {
@@ -24,10 +25,13 @@ import { ShaderTexture } from "../modules/ShaderTexture.js";
 import { ShaderPingPongPass } from "../modules/ShaderPingPongPass.js";
 import { randomInRange } from "../modules/Maf.js";
 import { ShaderPass } from "../modules/ShaderPass.js";
-import { capture } from "../modules/capture.js";
+// import { capture } from "../modules/capture.js";
 
-const width = 2048;
-const height = 2048;
+camera.position.set(0, 0, 10);
+camera.lookAt(scene.position);
+
+const width = 256;
+const height = 256;
 const data = new Float32Array(width * height * 4);
 
 let ptr = 0;
@@ -42,6 +46,20 @@ for (let y = 0; y < height; y++) {
 }
 
 const origin = new DataTexture(data, width, height, RGBAFormat, FloatType);
+
+function randomize() {
+  let ptr = 0;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      data[ptr] = randomInRange(-1, 1);
+      data[ptr + 1] = randomInRange(-1, 1);
+      data[ptr + 2] = 0;
+      data[ptr + 3] = 0;
+      ptr += 4;
+    }
+  }
+  origin.needsUpdate = true;
+}
 
 const ifsVs = `precision highp float;
 precision highp float;
@@ -123,37 +141,49 @@ vec2 spiral(in vec2 p, in float r, in float theta, in float phi) {
   return vec2(cos(theta) + sin(r), sin(theta) - cos(r)) / r;
 }
 
+vec2 hyperbolic(in vec2 p, in float r, in float theta, in float phi) {
+  return vec2(sin(theta) / r, r * cos(theta));
+}
+
 void main() {
   vec4 c = texture(prev, vUv);
-  // c.xy += vec2(rand(vUv.xy)*2.-1., rand(vUv.yx)*2.-1.);
+  // c.xy +=  vec2(rand(vUv.xy)*2.-1., rand(vUv.yx)*2.-1.);
 
   float r = length(c.xy);
   float theta = atan2(c.x, c.y);
   float phi = atan2(c.y, c.x);
 
   // int fn = int(rand(vUv)*9.);
+  float s = .1;
 
+  vec2 p;
   if(fn == 0) {
-    c.xy = linear(c.xy, r, theta, phi);
+    p = linear(c.xy, r, theta, phi);
   } else if(fn == 1) {
-    c.xy = sinusoidal(c.xy, r, theta, phi);
+    p = sinusoidal(c.xy, r, theta, phi);
   } else if(fn == 2) {
-    c.xy = spherical(c.xy, r, theta, phi);
+    p = spherical(c.xy, r, theta, phi);
   } else if(fn == 3) {
-    c.xy = swirl(c.xy, r, theta, phi);
+    p = swirl(c.xy, r, theta, phi);
   } else if(fn == 4) {
-     c.xy = horseshoe(c.xy, r, theta, phi);
+    p = horseshoe(c.xy, r, theta, phi);
   } else if(fn == 5) {
-    c.xy = polar(c.xy, r, theta, phi);
+    p = polar(c.xy, r, theta, phi);
   } else if(fn == 6) {
-    c.xy = handkerchief(c.xy, r, theta, phi);
+    p = handkerchief(c.xy, r, theta, phi);
   } else if(fn == 7) {
-    c.xy = heart(c.xy, r, theta, phi);
+    p = heart(c.xy, r, theta, phi);
   } else if(fn == 8) {
-    c.xy = disc(c.xy, r, theta, phi);
+    p = disc(c.xy, r, theta, phi);
   } else if(fn == 9) {
-    c.xy = spiral(c.xy, r, theta, phi);
+    p = spiral(c.xy, r, theta, phi);
+  } else if(fn == 10) {
+    p = hyperbolic(c.xy, r, theta, phi);
   }
+
+  c.xy += p;
+
+  c.a = (c.a + float(fn)) / 2.;
 
   // c.xy = polar(c.xy, r, theta, phi);
   
@@ -177,7 +207,7 @@ const ifs = new ShaderPingPongPass(renderer, ifsShader, {
   minFilter: NearestFilter,
   magFilter: NearestFilter,
 });
-ifs.setSize(256, 256);
+ifs.setSize(width, height);
 
 // const drawVs = ``;
 
@@ -204,10 +234,13 @@ uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 uniform sampler2D positions;
 
+out vec3 vColor;
+
 void main() {
   vec2 uv = position.xy;
-  vec3 p = texture(positions, uv).rgb;
-  vec4 mvPosition = modelViewMatrix * vec4( p, 1.0 );
+  vec4 p = texture(positions, uv);
+  vec4 mvPosition = modelViewMatrix * vec4(p.xyz, 1.0 );
+  vColor = vec3(p.a/9.);
   gl_PointSize = 1.;
   gl_Position = projectionMatrix * mvPosition;
 }`;
@@ -215,8 +248,10 @@ void main() {
 const pointFs = `precision highp float;
 out vec4 fragColor;
 
+in vec3 vColor;
+
 void main() {
-  fragColor = vec4(1.,1.,1.,.005);
+  fragColor = vec4(1., 1., 1., .2);
 }`;
 
 const pointMaterial = new RawShaderMaterial({
@@ -242,9 +277,18 @@ const mesh = new Mesh(
 
 renderer.autoClear = false;
 
-controls.addEventListener("change", (e) => {
+function reset() {
+  frames = 0;
+  captured = false;
   renderer.autoClear = true;
   ifsShader.uniforms.prev.value = origin;
+}
+
+controls.enableRotate = false;
+controls.enablePan = false;
+
+controls.addEventListener("change", (e) => {
+  reset();
 });
 
 let running = true;
@@ -252,13 +296,19 @@ window.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
     running = !running;
   }
+  if (e.code === "KeyR") {
+    randomize();
+    reset();
+  }
 });
 
+let captured = false;
+let frames = 0;
 function render() {
-  if (running) {
-    for (let i = 0; i < 1; i++) {
+  if (running && frames < 100) {
+    for (let i = 0; i < 100; i++) {
       ifsShader.uniforms.seed.value = randomInRange(-1000, 1000);
-      ifsShader.uniforms.fn.value = Math.floor(Math.random() * 9);
+      ifsShader.uniforms.fn.value = Math.floor(Math.random() * 10);
       ifs.render();
       ifsShader.uniforms.prev.value = ifs.current.texture;
       mesh.material.map = ifs.current.texture;
@@ -266,9 +316,15 @@ function render() {
       renderer.render(scene, camera);
       renderer.autoClear = false;
     }
+    frames++;
   }
-  capture(renderer.domElement);
+  // capture(renderer.domElement);
   renderer.setAnimationLoop(render);
 }
 
+function resize() {
+  reset();
+}
+
+addResize(resize);
 render();
