@@ -27,6 +27,7 @@ html {
 
 #index a {
   text-decoration: none;
+  color: inherit;
 }
 
 #index a:hover {
