@@ -302,6 +302,18 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
+function onMove() {
+  reset();
+}
+
+window.addEventListener("pointerdown", (e) => {
+  window.addEventListener("pointermove", onMove);
+});
+
+window.addEventListener("pointerup", (e) => {
+  window.removeEventListener("pointermove", onMove);
+});
+
 let captured = false;
 let frames = 0;
 function render() {
