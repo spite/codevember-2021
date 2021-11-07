@@ -7,8 +7,7 @@ import {
 import { getFBO } from "./fbo.js";
 
 class ShaderPingPongPass {
-  constructor(renderer, shader, options = {}) {
-    this.renderer = renderer;
+  constructor(shader, options = {}) {
     this.shader = shader;
     this.orthoScene = new Scene();
     this.fbo = getFBO(1, 1, options);
@@ -28,12 +27,12 @@ class ShaderPingPongPass {
     this.texture = this.fbo.texture;
   }
 
-  render(final) {
+  render(renderer, final) {
     if (!final) {
-      this.renderer.setRenderTarget(this.fbos[1 - this.currentFBO]);
+      renderer.setRenderTarget(this.fbos[1 - this.currentFBO]);
     }
-    this.renderer.render(this.orthoScene, this.orthoCamera);
-    this.renderer.setRenderTarget(null);
+    renderer.render(this.orthoScene, this.orthoCamera);
+    renderer.setRenderTarget(null);
     this.currentFBO = 1 - this.currentFBO;
   }
 
