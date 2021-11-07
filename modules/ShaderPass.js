@@ -7,8 +7,7 @@ import {
 import { getFBO } from "./fbo.js";
 
 class ShaderPass {
-  constructor(renderer, shader, options = {}) {
-    this.renderer = renderer;
+  constructor(shader, options = {}) {
     this.shader = shader;
     this.orthoScene = new Scene();
     this.fbo = getFBO(1, 1, options);
@@ -26,12 +25,12 @@ class ShaderPass {
     this.texture = this.fbo.texture;
   }
 
-  render(final) {
+  render(renderer, final) {
     if (!final) {
-      this.renderer.setRenderTarget(this.fbo);
+      renderer.setRenderTarget(this.fbo);
     }
-    this.renderer.render(this.orthoScene, this.orthoCamera);
-    this.renderer.setRenderTarget(null);
+    renderer.render(this.orthoScene, this.orthoCamera);
+    renderer.setRenderTarget(null);
   }
 
   setSize(width, height) {
