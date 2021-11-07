@@ -10,7 +10,7 @@ import {
 import { Stone } from "./stone.js";
 import { Post } from "./post.js";
 import { colors as comicColors } from "./comic-colors.js";
-import { capture } from "../modules/capture.js";
+// import { capture } from "../modules/capture.js";
 
 camera.position.set(1, 1, 1).multiplyScalar(4);
 camera.lookAt(scene.position);
