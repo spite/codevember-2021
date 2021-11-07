@@ -44,6 +44,8 @@ uniform sampler2D blur4Texture;
 uniform float vignetteBoost;
 uniform float vignetteReduction;
 
+uniform float time;
+
 in vec2 vUv;
 
 out vec4 fragColor;
@@ -71,18 +73,18 @@ void main() {
   b +=  2.*b1 / 20.;
   b +=  4.*b2 / 20.;
   b +=  8.*b3 / 20.;
-  b +=  1.6*b4 / 20.;
+  b +=  16.*b4 / 20.;
   
   fragColor = screen(color,b,1.);
-  fragColor *= vignette(vUv, 1.1, 1.1);
-  fragColor += .01 * noise(gl_FragCoord.xy);
+  fragColor *= vignette(vUv, vignetteBoost, vignetteReduction);
+  fragColor += .01 * noise(gl_FragCoord.xy + vec2(time, 0.));
 }
 `;
 
 const t = new Vector3();
 function perlin(x, y, z) {
   const ds = 0.1;
-  const dds = 3;
+  const dds = 1;
   const tx = x + dds * perlin3(ds * x + 35345, ds * y, ds * z);
   const ty = y + dds * perlin3(ds * x, ds * y - 345, ds * z);
   const tz = z + dds * perlin3(ds * x, ds * y, ds * z + 3456);
@@ -209,6 +211,7 @@ class Post {
         blur2Texture: { value: null },
         blur3Texture: { value: null },
         blur4Texture: { value: null },
+        time: { value: 0 },
       },
       vertexShader: orthoVertexShader,
       fragmentShader: finalFragmentShader,
@@ -276,6 +279,8 @@ class Post {
       this.bloomPass.blurPasses[3].prev.texture;
     this.finalPass.shader.uniforms.blur4Texture.value =
       this.bloomPass.blurPasses[4].prev.texture;
+    this.finalPass.shader.uniforms.time.value = Math.random() * 100000;
+
     this.finalPass.render(this.renderer, true);
   }
 }

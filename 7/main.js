@@ -19,7 +19,7 @@ const stone = new Stone(renderer);
 scene.add(stone);
 stone.rotation.set(-Math.PI / 6, 0, 0);
 
-const post = new Post(renderer);
+const post = new Post(renderer, { vignetteBoost: 1.1, vignetteReduction: 1.1 });
 
 stone.sphereDetail = 80;
 randomize();
@@ -54,9 +54,17 @@ document.querySelector("#randomizeBtn").addEventListener("click", (e) => {
   randomize();
 });
 
+let spin = true;
+document.querySelector("#pauseBtn").addEventListener("click", (e) => {
+  spin = !spin;
+});
+
 window.addEventListener("keydown", (e) => {
   if (e.code === "KeyR") {
     randomize();
+  }
+  if (e.code === "Space") {
+    spin = !spin;
   }
 });
 
@@ -66,12 +74,17 @@ function myResize(w, h) {
 
 addResize(myResize);
 
+let prevTime = performance.now();
+
 function render() {
   const t = performance.now();
-  stone.rotation.y = t / 1000;
+  const dt = t - prevTime;
+  prevTime = t;
+  if (spin) {
+    stone.rotation.y += dt / 1000;
+  }
   post.render(stone, scene, camera);
   renderer.setAnimationLoop(render);
-  capture(renderer.domElement);
 }
 
 resize();
