@@ -3,20 +3,17 @@ import {
   scene,
   controls,
   renderer,
-  addUpdate,
   camera,
   addResize,
   resize,
 } from "../modules/renderer.js";
-import {
-  Mesh,
-  MeshBasicMaterial,
-  PlaneBufferGeometry,
-} from "../third_party/three.module.js";
 import { Stone } from "./stone.js";
 import { Post } from "./post.js";
 import { colors as comicColors } from "./comic-colors.js";
 import { capture } from "../modules/capture.js";
+
+camera.position.set(1, 1, 1).multiplyScalar(4);
+camera.lookAt(scene.position);
 
 const stone = new Stone(renderer);
 scene.add(stone);

@@ -74,7 +74,8 @@ void main() {
   b +=  1.6*b4 / 20.;
   
   fragColor = screen(color,b,1.);
-  fragColor *= vignette(vUv, 1.1, 1.1) + .01 * noise(gl_FragCoord.xy);
+  fragColor *= vignette(vUv, 1.1, 1.1);
+  fragColor += .01 * noise(gl_FragCoord.xy);
 }
 `;
 
