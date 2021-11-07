@@ -63,7 +63,7 @@ const material = new RawShaderMaterial({
   vertexShader: vs,
   fragmentShader: fs,
   glslVersion: GLSL3,
-  wireframe: true,
+  // wireframe: true,
   side: DoubleSide,
 });
 

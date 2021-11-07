@@ -60,50 +60,67 @@ function randomSlice(geometry) {
     randomInRange(-1, 1)
   );
   const offset = new Vector3().crossVectors(n, rnd);
-  offset.multiplyScalar(1 * randomInRange(0.01, 0.1));
+  offset.multiplyScalar(0.5 * randomInRange(0.01, 0.1));
   const res = sliceGeometry(geometry, slicePlane, offset);
 
   return mergeGeometries(res.geometry1, res.geometry2);
 }
 
 let geo;
+let slices = 0;
+let totalSlices = 0;
+let geos = [];
+let currentGeo = 0;
 
-async function init() {
-  //geo = new IcosahedronBufferGeometry(1, 30);
-  // geo = new TorusKnotBufferGeometry(0.5, 0.2, 300, 30).toNonIndexed();
-  // geo = new BoxBufferGeometry(1, 1, 1).toNonIndexed();
-
-  for (let i = 0; i < 10; i++) {
-    geo = randomSlice(geo);
-  }
-  geo.computeVertexNormals();
-
-  const mesh = new Mesh(geo, material);
-  scene.add(mesh);
+function randomize() {
+  totalSlices += 50;
 }
 
-let slice = !true;
+function reset() {
+  geo = geos[currentGeo];
+  mesh.geometry = geo;
+  totalSlices = 0;
+  slices = 0;
+}
+
+function toggle() {
+  currentGeo = (currentGeo + 1) % geos.length;
+  geo = geos[currentGeo];
+  mesh.geometry = geo;
+  totalSlices = 0;
+  slices = 0;
+}
+
+document.querySelector("#randomizeBtn").addEventListener("click", (e) => {
+  randomize();
+});
+
+document.querySelector("#resetBtn").addEventListener("click", (e) => {
+  reset();
+});
+
+document.querySelector("#toggleBtn").addEventListener("click", (e) => {
+  toggle();
+});
 
 window.addEventListener("keydown", (e) => {
   if (e.code === "KeyR") {
-    geo = originalGeo;
+    reset();
   }
   if (e.code === "Space") {
-    slice = !slice;
+    randomize();
   }
-});
-
-let oneSlice = false;
-window.addEventListener("click", (e) => {
-  oneSlice = true;
+  if (e.code === "KeyT") {
+    toggle();
+  }
 });
 
 function render() {
-  if (slice || oneSlice) {
+  if (slices < totalSlices) {
     geo = randomSlice(geo);
     geo.computeVertexNormals();
     mesh.geometry = geo;
-    oneSlice = false;
+    slices++;
   }
 
   material.uniforms.time.value = Math.random() * 100000;
@@ -130,6 +147,7 @@ objLoader.load("../assets/suzanne-hq.obj", (obj) => {
   );
   const mat = new Matrix4().makeRotationX(-Math.PI / 2);
   suzanneGeo.applyMatrix4(mat);
+  geos.push(suzanneGeo);
 
   const torusGeo = new TorusKnotBufferGeometry(
     0.5,
@@ -137,13 +155,15 @@ objLoader.load("../assets/suzanne-hq.obj", (obj) => {
     300,
     30
   ).toNonIndexed();
+  geos.push(torusGeo);
 
-  originalGeo = suzanneGeo;
-  geo = originalGeo;
+  // const icosaGeo = new IcosahedronBufferGeometry(1, 1);
+  // geos.push(icosaGeo);
 
-  for (let i = 0; i < 100; i++) {
-    geo = randomSlice(geo);
-  }
+  const cubeGeo = new BoxBufferGeometry(1, 1, 1).toNonIndexed();
+  geos.push(cubeGeo);
+
+  geo = geos[currentGeo];
   geo.computeVertexNormals();
 
   mesh = new Mesh(geo, material);
