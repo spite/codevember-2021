@@ -1,4 +1,10 @@
-import { scene, renderer, camera } from "../modules/renderer.js";
+import {
+  scene,
+  renderer,
+  camera,
+  addResize,
+  resize,
+} from "../modules/renderer.js";
 import { sliceGeometry } from "./SliceGeometry.js";
 import {
   BoxBufferGeometry,
@@ -14,7 +20,12 @@ import {
 import { randomInRange } from "../modules/Maf.js";
 import { OBJLoader } from "../third_party/OBJLoader.js";
 import { material } from "./material.js";
-import { capture } from "../modules/capture.js";
+// import { capture } from "../modules/capture.js";
+import { getFBO } from "../modules/fbo.js";
+import { pass as finalPass } from "./finalPass.js";
+
+const colorFBO = getFBO(1, 1, {}, true);
+finalPass.shader.uniforms.color.value = colorFBO.texture;
 
 camera.position.set(0, 0, 5);
 camera.lookAt(scene.position);
@@ -49,7 +60,7 @@ function randomSlice(geometry) {
     randomInRange(-1, 1)
   );
   const offset = new Vector3().crossVectors(n, rnd);
-  offset.multiplyScalar(randomInRange(0.01, 0.1));
+  offset.multiplyScalar(1 * randomInRange(0.01, 0.1));
   const res = sliceGeometry(geometry, slicePlane, offset);
 
   return mergeGeometries(res.geometry1, res.geometry2);
@@ -71,7 +82,7 @@ async function init() {
   scene.add(mesh);
 }
 
-let slice = true;
+let slice = !true;
 
 window.addEventListener("keydown", (e) => {
   if (e.code === "KeyR") {
@@ -82,18 +93,30 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
+let oneSlice = false;
+window.addEventListener("click", (e) => {
+  oneSlice = true;
+});
+
 function render() {
-  if (slice) {
+  if (slice || oneSlice) {
     geo = randomSlice(geo);
     geo.computeVertexNormals();
     mesh.geometry = geo;
+    oneSlice = false;
   }
 
   material.uniforms.time.value = Math.random() * 100000;
+
+  renderer.setRenderTarget(colorFBO);
   renderer.render(scene, camera);
+  renderer.setRenderTarget(null);
+
+  finalPass.render(renderer, true);
+
   renderer.setAnimationLoop(render);
 
-  capture(renderer.domElement);
+  // capture(renderer.domElement);
 }
 
 let mesh;
@@ -108,11 +131,30 @@ objLoader.load("../assets/suzanne-hq.obj", (obj) => {
   const mat = new Matrix4().makeRotationX(-Math.PI / 2);
   suzanneGeo.applyMatrix4(mat);
 
+  const torusGeo = new TorusKnotBufferGeometry(
+    0.5,
+    0.2,
+    300,
+    30
+  ).toNonIndexed();
+
   originalGeo = suzanneGeo;
   geo = originalGeo;
 
-  mesh = new Mesh(suzanneGeo, material);
+  for (let i = 0; i < 100; i++) {
+    geo = randomSlice(geo);
+  }
+  geo.computeVertexNormals();
+
+  mesh = new Mesh(geo, material);
   scene.add(mesh);
   render();
-  //init();
 });
+
+function myResize(w, h) {
+  colorFBO.setSize(w, h);
+  finalPass.setSize(w, h);
+}
+
+addResize(myResize);
+resize();
