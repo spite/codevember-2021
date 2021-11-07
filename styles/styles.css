@@ -75,6 +75,11 @@ canvas {
   margin-bottom: 1em;
 }
 
+#info button {
+  color: inherit;
+  cursor: pointer;
+}
+
 button {
   border: 1px solid white;
   outline: none;
