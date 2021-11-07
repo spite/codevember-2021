@@ -14,18 +14,18 @@ import {
   DataTexture3D,
   RedFormat,
   FloatType,
-} from "../../third_party/three.module.js";
-import { getFBO } from "../../modules/fbo.js";
-import { shader as orthoVertexShader } from "../../shaders/ortho.js";
+} from "../third_party/three.module.js";
+import { getFBO } from "../modules/fbo.js";
+import { shader as orthoVertexShader } from "../shaders/ortho.js";
 import { shader as crystalFragmentShader } from "./crystal.js";
-import { ShaderPass } from "../../modules/ShaderPass.js";
-import { shader as vignette } from "../../shaders/vignette.js";
-import { shader as noise } from "../../shaders/noise.js";
-import { shader as screen } from "../../shaders/screen.js";
-// import { shader as fxaa } from "../../shaders/fxaa.js";
-// import { shader as softLight } from "../../shaders/soft-light.js";
-// import { shader as colorDodge } from "../../shaders/color-dodge.js";
-// import { shader as rgbShift } from "../../shaders/rgb-shift.js";
+import { ShaderPass } from "../modules/ShaderPass.js";
+import { shader as vignette } from "../shaders/vignette.js";
+import { shader as noise } from "../shaders/noise.js";
+import { shader as screen } from "../shaders/screen.js";
+// import { shader as fxaa } from "../shaders/fxaa.js";
+// import { shader as softLight } from "../shaders/soft-light.js";
+// import { shader as colorDodge } from "../shaders/color-dodge.js";
+// import { shader as rgbShift } from "../shaders/rgb-shift.js";
 import { BloomPass } from "../modules/bloomPass.js";
 import { perlin3 } from "../third_party/perlin.js";
 
