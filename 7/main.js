@@ -21,10 +21,13 @@ stone.rotation.set(-Math.PI / 6, 0, 0);
 
 const post = new Post(renderer, { vignetteBoost: 1.1, vignetteReduction: 1.1 });
 
+let lastGenTime = performance.now();
+
 stone.sphereDetail = 80;
 randomize();
 
 function randomize() {
+  lastGenTime = performance.now();
   // stone.octahedronFactor = randomInRange(0.25, 0.75);
   stone.icosahedronFactor = randomInRange(0, 0.75);
   stone.dodecahedronFactor = randomInRange(0, 0.75);
@@ -78,6 +81,10 @@ let prevTime = performance.now();
 
 function render() {
   const t = performance.now();
+  if (spin && t - lastGenTime > 5000) {
+    randomize();
+    lastGenTime = t;
+  }
   const dt = t - prevTime;
   prevTime = t;
   if (spin) {
