@@ -62,15 +62,13 @@ void main() {
   vWorldPosition = modelMatrix * vec4(vPosition, 1. );
   vEyePosition = viewMatrix * vWorldPosition;
 
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos.xyz, 1.);    
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos.xyz, 1.);
 }`;
 
 const stoneFS = `
 precision highp float;
 
 uniform sampler2D matCapMap;
-uniform bool useHue;
-uniform vec3 color1;
 
 uniform float curvatureRim;
 uniform float frostFactor;
@@ -172,10 +170,6 @@ void main() {
   vec2 vN = matCapUV(normalize(vEyePosition.xyz), n);
 
   vec4 c = texture(matCapMap, vN);
-
-  if(useHue){
-    c.rgb = blendHue(c.rgb, color1);
-  }
 
   color = vec4(c.rgb, 1.);
   color.rgb += vec3(curvature);
@@ -391,8 +385,6 @@ class Stone extends Mesh {
         // surface
         matCapMap: { value: loader.load("../assets/matcap.png") },
         frostFactor: { value: 0 },
-        useHue: { value: false },
-        color1: { value: new Color() },
       },
       vertexShader: stoneVS,
       fragmentShader: stoneFS,
@@ -652,14 +644,6 @@ class Stone extends Mesh {
 
   set matCapMap(v) {
     this.stoneMaterial.uniforms.matCapMap.value = v;
-  }
-
-  set color1(v) {
-    this.stoneMaterial.uniforms.color1.value.set(v);
-  }
-
-  set useHue(v) {
-    this.stoneMaterial.uniforms.useHue.value = v;
   }
 
   set sphereDetail(v) {
