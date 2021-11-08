@@ -201,7 +201,7 @@ const ifsShader = new RawShaderMaterial({
   glslVersion: GLSL3,
 });
 
-const ifs = new ShaderPingPongPass(renderer, ifsShader, {
+const ifs = new ShaderPingPongPass(ifsShader, {
   format: RGBAFormat,
   type: FloatType,
   minFilter: NearestFilter,
@@ -321,7 +321,7 @@ function render() {
     for (let i = 0; i < 100; i++) {
       ifsShader.uniforms.seed.value = randomInRange(-1000, 1000);
       ifsShader.uniforms.fn.value = Math.floor(Math.random() * 10);
-      ifs.render();
+      ifs.render(renderer);
       ifsShader.uniforms.prev.value = ifs.current.texture;
       mesh.material.map = ifs.current.texture;
       pointMaterial.uniforms.positions.value = ifs.current.texture;
