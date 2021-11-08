@@ -41,8 +41,8 @@ function randomize() {
   stone.voronoiStrength = randomInRange(-0.4, -0.2);
   stone.noiseStrength = randomInRange(0, 0.1);
   stone.noiseScale = randomInRange(1, 5);
-  stone.curvatureRim = 1;
-  stone.frostFactor = 0;
+  stone.curvatureRim = randomInRange(0, 1);
+  stone.frostFactor = randomInRange(0, 0.1);
   stone.update();
 
   const c = comicColors[Math.floor(Math.random() * comicColors.length)];
