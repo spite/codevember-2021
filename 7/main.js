@@ -30,7 +30,7 @@ function randomize() {
   stone.dodecahedronFactor = randomInRange(0, 0.75);
   stone.sphereFactor = randomInRange(0.25, 0.75);
   stone.smoothness = randomInRange(0.5, 1);
-  stone.chamfer = randomInRange(0.4, 2);
+  stone.chamfer = randomInRange(0.9, 2);
   stone.height = randomInRange(1, 2);
   stone.twistX = randomInRange(-0.75, 0.75);
   stone.twistY = randomInRange(-0.75, 0.75);
