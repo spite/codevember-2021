@@ -7,10 +7,10 @@ import {
 import { getFBO } from "./fbo.js";
 
 class ShaderPass {
-  constructor(shader, options = {}) {
+  constructor(shader, options = {}, antialiased) {
     this.shader = shader;
     this.orthoScene = new Scene();
-    this.fbo = getFBO(1, 1, options);
+    this.fbo = getFBO(1, 1, options, antialiased);
     this.orthoCamera = new OrthographicCamera(
       1 / -2,
       1 / 2,
