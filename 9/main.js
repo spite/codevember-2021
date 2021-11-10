@@ -9,7 +9,7 @@ import {
 import { Trail } from "./trail.js";
 import { Post } from "./post.js";
 import { onVisibilityChange } from "../modules/visibility.js";
-import { capture } from "../modules/capture.js";
+// import { capture } from "../modules/capture.js";
 
 const post = new Post(renderer, { vignetteBoost: 1.1, vignetteReduction: 1.1 });
 
@@ -72,7 +72,7 @@ function render() {
   }
   // renderer.render(scene, camera);
   post.render(scene, camera);
-  capture(renderer.domElement);
+  // capture(renderer.domElement);
   renderer.setAnimationLoop(render);
 }
 
