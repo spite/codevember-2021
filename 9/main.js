@@ -9,33 +9,44 @@ import {
 import { Trail } from "./trail.js";
 import { Post } from "./post.js";
 import { onVisibilityChange } from "../modules/visibility.js";
+import { capture } from "../modules/capture.js";
 
 const post = new Post(renderer, { vignetteBoost: 1.1, vignetteReduction: 1.1 });
+
+renderer.setClearColor(0x101010, 1);
 
 camera.position.set(0, 0, 4);
 camera.lookAt(scene.position);
 
 const trails = [];
-function addTrail(color, width) {
-  const trail = new Trail(color, width);
+function addTrail(width) {
+  const trail = new Trail(width);
   trails.push(trail);
   scene.add(trail.source);
   scene.add(trail.trailMesh);
 }
 
-addTrail(0xffffff, 0.2);
-addTrail(0xffffff, 0.2);
+addTrail(0.2);
+addTrail(0.2);
 
 let running = true;
+let spin = true;
 
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
     running = !running;
   }
+  if (e.code === "KeyS") {
+    spin = !spin;
+  }
 });
 
 document.querySelector("#pauseBtn").addEventListener("click", (e) => {
   running = !running;
+});
+
+document.querySelector("#spinBtn").addEventListener("click", (e) => {
+  spin = !spin;
 });
 
 onVisibilityChange((hidden) => {
@@ -56,8 +67,12 @@ function render() {
     }
   }
   prevTime = t;
+  if (spin) {
+    scene.rotation.y += dt / 5000;
+  }
   // renderer.render(scene, camera);
   post.render(scene, camera);
+  capture(renderer.domElement);
   renderer.setAnimationLoop(render);
 }
 

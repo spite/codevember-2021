@@ -10,27 +10,42 @@ import { curl, generateNoiseFunction } from "../modules/curl.js";
 import { MeshLine, MeshLineMaterial } from "../modules/MeshLine.js";
 import { Easings } from "../modules/easings.js";
 import { randomInRange } from "../modules/Maf.js";
+import {
+  warm,
+  natural,
+  natural2,
+  circus,
+  seaside,
+} from "../modules/palettes.js";
+import { GradientLinear } from "../modules/gradient-linear.js";
+
+const gradient = new GradientLinear(natural);
 
 const center = new Vector3(0, 0, 0);
 
 class Trail {
-  constructor(color = 0xffffff, width = 1) {
+  constructor(width = 1) {
     this.fn = generateNoiseFunction();
     this.radFn = generateNoiseFunction();
 
-    this.color = new Color(color);
+    this.color = new Color();
+
+    this.colorOffset = Math.random() * Math.PI * 2;
+    this.colorTime = Math.random() * Math.PI * 2;
+    this.colorSpeed = randomInRange(0.9, 1.1);
+
     this.source = new Mesh(
       new IcosahedronBufferGeometry(0.1 * width, 10),
-      new MeshBasicMaterial({ color: color })
+      new MeshBasicMaterial({ color: this.color })
     );
 
     this.trail = new MeshLine();
     this.trail.widthCallback = (t) => {
-      return Easings.InOutCubic(t);
+      return Easings.OutCubic(t);
     };
     const lineMaterial = new MeshLineMaterial({
       lineWidth: 0.275 * width,
-      color: new Color(color),
+      color: this.color,
       sizeAttenuation: true,
       // wireframe: true,
       resolution: new Vector2(window.innerWidth, window.innerHeight),
@@ -54,6 +69,13 @@ class Trail {
   update(t) {
     const ct = t / 1000;
     const dt = ct - this.prevTime;
+    this.colorTime += dt / 10;
+    const c = gradient.getAt(
+      0.5 + 0.5 * Math.cos(this.colorTime * this.colorSpeed + this.colorOffset)
+    );
+    this.color.copy(c);
+    this.source.material.color.copy(c);
+
     this.prevTime = ct;
     const steps = 100;
     for (let i = 0; i < steps; i++) {
