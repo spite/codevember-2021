@@ -1,18 +1,11 @@
 import {
   scene,
-  controls,
   addResize,
   renderer,
-  addUpdate,
   camera,
   resize,
 } from "../modules/renderer.js";
-import {
-  BackSide,
-  BoxBufferGeometry,
-  Mesh,
-  MeshStandardMaterial,
-} from "../third_party/three.module.js";
+
 import { Trail } from "./trail.js";
 import { Post } from "./post.js";
 import { onVisibilityChange } from "../modules/visibility.js";
@@ -30,18 +23,19 @@ function addTrail(color, width) {
   scene.add(trail.trailMesh);
 }
 
-// addTrail(0xff0000);
-// addTrail(0x00ff00);
-// addTrail(0x0000ff);
+addTrail(0xffffff, 0.2);
 addTrail(0xffffff, 0.2);
 
-addTrail(0xffffff, 0.2);
 let running = true;
 
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
     running = !running;
   }
+});
+
+document.querySelector("#pauseBtn").addEventListener("click", (e) => {
+  running = !running;
 });
 
 onVisibilityChange((hidden) => {
