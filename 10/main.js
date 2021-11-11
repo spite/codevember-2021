@@ -28,7 +28,7 @@ renderer.shadowMap.enabled = true;
 // renderer.outputEncoding = sRGBEncoding;
 renderer.shadowMap.type = PCFSoftShadowMap;
 
-const envMap = await initHdrEnv("studio_small_03_2k.hdr", renderer);
+const envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
 
 const size = 80;
 const material = new MeshStandardMaterial({
