@@ -18,7 +18,7 @@ import {
 import { initHdrEnv } from "../modules/hdri.js";
 import { randomInRange } from "../modules/Maf.js";
 import { Post } from "./post.js";
-import { capture } from "../modules/capture.js";
+// import { capture } from "../modules/capture.js";
 import { adjustOrthoToBB } from "../modules/frustum.js";
 
 const post = new Post(renderer);
