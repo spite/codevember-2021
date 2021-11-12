@@ -11,8 +11,11 @@ html {
   font-size: 14px;
 }
 
-#index {
+body {
   padding: 2em;
+}
+
+#index {
   color: #202020;
   font-size: 1rem;
 }
@@ -25,12 +28,16 @@ html {
   margin-bottom: 1em;
 }
 
-#index a {
+#index ul {
+  margin-bottom: 1em;
+}
+
+a {
   text-decoration: none;
   color: inherit;
 }
 
-#index a:hover {
+a:hover {
   font-weight: bold;
 }
 
