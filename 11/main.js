@@ -158,10 +158,14 @@ let curSpeed = 1;
 
 window.addEventListener("pointermove", (e) => {
   speed = e.pageY / window.innerHeight;
+  e.preventDefault();
+  e.stopPropagation();
 });
 
 window.addEventListener("pointerdown", (e) => {
   speed = e.pageY / window.innerHeight;
+  e.preventDefault();
+  e.stopPropagation();
 });
 
 let prevTime = performance.now();
