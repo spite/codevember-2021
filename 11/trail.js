@@ -14,8 +14,6 @@ import { GradientLinear } from "../modules/gradient-linear.js";
 
 const gradient = new GradientLinear(natural);
 
-const center = new Vector3(0, 0, 0);
-
 class Trail {
   constructor(width = 1, length = 10) {
     this.life = 0;
@@ -26,8 +24,11 @@ class Trail {
     this.colorTime = Math.random() * Math.PI * 2;
     this.colorSpeed = randomInRange(0.9, 1.1);
 
-    const endGeo = new IcosahedronBufferGeometry(width, 3);
-    const endMat = new MeshBasicMaterial({ color: this.color });
+    const endGeo = new IcosahedronBufferGeometry(width, 1);
+    const endMat = new MeshBasicMaterial({
+      color: this.color,
+      wireframe: !true,
+    });
     this.head = new Mesh(endGeo, endMat);
     this.tail = new Mesh(endGeo, endMat);
 
@@ -35,6 +36,7 @@ class Trail {
 
     const lineMaterial = new MeshLineMaterial({
       lineWidth: 0.65 * width,
+      wireframe: !true,
       color: this.color,
       sizeAttenuation: true,
       resolution: new Vector2(window.innerWidth, window.innerHeight),

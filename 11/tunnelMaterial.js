@@ -45,6 +45,7 @@ const tunnelMaterial = new RawShaderMaterial({
   uniforms: {
     time: { value: 0 },
   },
+  wireframe: !true,
   vertexShader,
   fragmentShader,
   side: BackSide,
