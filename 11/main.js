@@ -24,11 +24,15 @@ import { curl } from "../modules/curl.js";
 import { Trail } from "./trail.js";
 import { Post } from "./post.js";
 import { tunnelMaterial } from "./tunnelMaterial.js";
+import { DeviceOrientationControls } from "../third_party/DeviceOrientationControls.js";
 // import { capture } from "../modules/capture.js";
 
 controls.enablePan = false;
 controls.enableRotate = false;
 controls.enableZoom = false;
+
+let useOrientation = false;
+const deviceOrientationControls = new DeviceOrientationControls(camera);
 
 const post = new Post(renderer);
 
@@ -75,11 +79,6 @@ class Tunnel {
     const path = new CatmullRomCurve3(points, true, "centripetal", 1);
 
     const geometry = new TubeBufferGeometry(path, 360, 0.5, 36);
-    const material = new MeshBasicMaterial({
-      wireframe: !true,
-      side: BackSide,
-      color: 0,
-    });
     const mesh = new Mesh(geometry, tunnelMaterial);
     this.mesh = mesh;
     this.path = path;
@@ -156,6 +155,16 @@ const q = new Quaternion();
 let speed = 1;
 let curSpeed = 1;
 
+document.querySelector("#orientationBtn").addEventListener("click", (e) => {
+  useOrientation = !useOrientation;
+  e.preventDefault();
+  e.stopPropagation();
+});
+window.addEventListener("keydown", (e) => {
+  if (e.code === "KeyD") {
+    useOrientation = !useOrientation;
+  }
+});
 window.addEventListener("pointermove", (e) => {
   speed = e.pageY / window.innerHeight;
   e.preventDefault();
@@ -180,15 +189,19 @@ function render() {
   prevTime = t;
 
   const tunnelTime = time / 100000;
-  tunnelMaterial.uniforms.time.value = time / 1000;
+  tunnelMaterial.uniforms.time.value = tunnelTime / 1000;
   updateTrails(tunnelTime);
-
   tunnel.update(tunnelTime, camera.position);
-  tunnel.update(tunnelTime + 0.01, target, tangentFrom);
-  tangent.lerp(tangentFrom, 0.1).normalize();
-  rot.lookAt(camera.position, target, tangent);
-  q.setFromRotationMatrix(rot);
-  camera.quaternion.slerp(q, 0.05);
+
+  if (useOrientation) {
+    deviceOrientationControls.update();
+  } else {
+    tunnel.update(tunnelTime + 0.01, target, tangentFrom);
+    tangent.lerp(tangentFrom, 0.1).normalize();
+    rot.lookAt(camera.position, target, tangent);
+    q.setFromRotationMatrix(rot);
+    camera.quaternion.slerp(q, 0.05);
+  }
 
   // renderer.render(scene, camera);
   post.render(scene, camera);
