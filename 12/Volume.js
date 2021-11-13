@@ -173,24 +173,24 @@ void main(){
 
   vec4 ac = vec4(0.,0.,0.,0.);
 
-  vec3 l = normalize(-vec3(1.));
-  vec3 e = vec3(0.,0.,-1.);
-  vec3 h = normalize(l + e);
+  vec3 l = normalize(vec3(0.,1.,0.));
 
   float total = 0.;
   for (float t = bounds.x; t < bounds.y; t += delta) {
     float d = sample1(p + .5);
     if ( d > cut ) {
+      float f = (d-cut)*2.;
       vec3 n = normal(p + .5);
-      float diffuse = .5 + .5 * dot(normalize(vec3(1.)), n);
+      float diffuse = .5 + .5 * dot(l, n);
+      vec3 e = normalize(-p);
       vec3 h = normalize(l + e);
 
-      float specular = pow(max(dot(n, h), 0.), 2.);
+      float specular = pow(max(dot(n, h), 0.), 20.);
       vec3 c = (.5 + n * 0.5) + ( p * 1.5 + 0.25 );
       float light = (diffuse+specular);
-      color.rgb += c * light;
+      color.rgb += (c * light)*f;
       color.a += .1;
-      total++;
+      total += f;
     }
     if(color.a>1.) {
       break;
@@ -202,7 +202,7 @@ void main(){
     p += rayDir * delta;
   }
   color.rgb /= total;
-  color.rgb *= .8;
+  // color.rgb *= .8;
 
   if ( color.a == 0. ) {
     discard;
