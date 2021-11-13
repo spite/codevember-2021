@@ -11,7 +11,7 @@ import {
   generateGoursat,
   generateTorus,
   generatePerlin,
-  generateTorusKnot,
+  generateHyperelliptic,
 } from "./fields.js";
 // import { capture } from "../modules/capture.js";
 
@@ -36,7 +36,7 @@ function randomize() {
   if (r > 2 / 3) {
     generateGoursat(data, width, height, depth);
   } else if (r > 1 / 3) {
-    generateTorusKnot(data, width, height, depth);
+    generateHyperelliptic(data, width, height, depth);
   } else {
     generateTorus(data, width, height, depth);
   }

@@ -1,6 +1,6 @@
 import { Vector3, Vector2 } from "../third_party/three.module.js";
 import { perlin3 } from "../third_party/perlin.js";
-import { clamp, randomInRange } from "../modules/Maf.js";
+import { clamp, mod, TAU, randomInRange } from "../modules/Maf.js";
 
 function sdTorus(p, t) {
   const pp = new Vector2(p.x, p.z);
@@ -83,6 +83,44 @@ function sdBox2d(p, s) {
   return p.length() + Math.min(Math.max(p.x, p.y), 0);
 }
 
+function blur3d(field, width, height, depth, intensity = 1) {
+  const fieldCopy = field.slice();
+  const size = width;
+  const size2 = width * height;
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      for (let z = 0; z < depth; z++) {
+        const index = size2 * z + size * y + x;
+        let val = fieldCopy[index];
+        let count = 1;
+
+        for (let x2 = -1; x2 <= 1; x2 += 2) {
+          const x3 = x2 + x;
+          if (x3 < 0 || x3 >= size) continue;
+
+          for (let y2 = -1; y2 <= 1; y2 += 2) {
+            const y3 = y2 + y;
+            if (y3 < 0 || y3 >= size) continue;
+
+            for (let z2 = -1; z2 <= 1; z2 += 2) {
+              const z3 = z2 + z;
+              if (z3 < 0 || z3 >= size) continue;
+
+              const index2 = size2 * z3 + size * y3 + x3;
+              const val2 = fieldCopy[index2];
+
+              count++;
+              val += (intensity * (val2 - val)) / count;
+            }
+          }
+        }
+
+        field[index] = val;
+      }
+    }
+  }
+}
+
 function torusBox() {
   const r1 = randomInRange(1, 1.4);
   const r2 = randomInRange(0.1, 0.2);
@@ -117,8 +155,22 @@ function generateTorusKnot(data, width, height, depth) {
   });
 }
 
+function hyperelliptic(p, f) {
+  return (
+    Math.pow(Math.pow(p.x, f) + Math.pow(p.y, f) + Math.pow(p.z, f), 1.0 / 6) -
+    1.0
+  );
+}
+
+function generateHyperelliptic(data, width, height, depth) {
+  const f = 6 * ~~randomInRange(1, 10);
+  map(data, width, height, depth, (p) => {
+    return 0.8 - hyperelliptic(p.multiplyScalar(3), f);
+  });
+}
+
 export {
-  generateTorusKnot,
+  generateHyperelliptic,
   generatePerlin,
   generateGoursat,
   generateTorus,
