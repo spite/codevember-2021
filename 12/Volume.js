@@ -169,9 +169,9 @@ void main(){
       vec3 e = normalize(-p);
       vec3 h = normalize(l + e);
 
-      float specular = pow(max(dot(n, h), 0.), 20.);
+      float specular = pow(max(dot(n, h), 0.), 10.);
       vec3 c = (.5 + n * 0.5) + ( p * 1.5 + 0.25 );
-      float light = (diffuse+specular);
+      float light = diffuse + specular;
       color.rgb += (c * light)*f;
       color.a += .1;
       total += f;
