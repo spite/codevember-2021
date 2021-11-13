@@ -123,19 +123,19 @@ function blur3d(field, width, height, depth, intensity = 1) {
 
 function torusBox() {
   const r1 = randomInRange(1, 1.4);
-  const r2 = randomInRange(0.1, 0.2);
+  const r2 = randomInRange(0.1, 0.6);
   const pf = Math.round(Math.random() * 4 * 2) / 2;
   const oy = Math.random() * 0.5;
   const s = Math.sign(randomInRange(-1, 1));
 
   let shapeFn;
-  if (Math.random() < 0.5) {
-    shapeFn = (p) => sdCircle(p, r2);
-  } else {
-    const r3 = randomInRange(0.25, 0.4);
-    const size = new Vector2(r2, r3);
-    shapeFn = (p) => sdBox2d(p, size) - 0.1;
-  }
+  // if (Math.random() < 0.5) {
+  shapeFn = (p) => sdCircle(p, r2);
+  // } else {
+  //   const r3 = randomInRange(0.25, 0.4);
+  //   const size = new Vector2(r2, r3);
+  //   shapeFn = (p) => sdBox2d(p, size) - 0.1;
+  // }
 
   return (p) => {
     const pp = new Vector2(p.x, p.z);
@@ -144,7 +144,7 @@ function torusBox() {
     cp.copy(rot2d(cp, a * pf));
     cp.y = Math.abs(cp.y) - oy;
     let d = shapeFn(cp);
-    return 0.6 - d;
+    return clamp(0.6 - d, 0, 1);
   };
 }
 
@@ -153,6 +153,7 @@ function generateTorusKnot(data, width, height, depth) {
   map(data, width, height, depth, (p) => {
     return torusFn(p.multiplyScalar(5.2));
   });
+  blur(data, 1);
 }
 
 function hyperelliptic(p, f) {
@@ -170,6 +171,7 @@ function generateHyperelliptic(data, width, height, depth) {
 }
 
 export {
+  generateTorusKnot,
   generateHyperelliptic,
   generatePerlin,
   generateGoursat,

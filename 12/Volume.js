@@ -134,29 +134,13 @@ vec3 normal( vec3 coord ) {
     return vec3(0.,0.,-1.);
   }
 
-  float step = 0.01;
+  float step = 1./128.;
   float x = sample1( coord + vec3( -step, 0.0, 0.0 ) ) - sample1( coord + vec3( +step, 0.0, 0.0 ) );
   float y = sample1( coord + vec3( 0.0, -step, 0.0 ) ) - sample1( coord + vec3( 0.0, +step, 0.0 ) );
   float z = sample1( coord + vec3( 0.0, 0.0, -step ) ) - sample1( coord + vec3( 0.0, 0.0, +step ) );
 
   return normalize( vec3( x, y, z ) );
 
-}
-
-float calcShadow(in vec3 p) {
-  vec3 dir = -normalize(vec3(0.,1.,0.));
-  float occlusion = 0.;
-  float steps = 10.;
-  for(float i=0.; i< steps; i++) {
-    p += dir * i / steps;
-    if(p.y<0.5) {
-      float d = sample1(p + .5);
-      if(d>cut) {
-        return 1.;
-      }
-    }
-  }
-  return 0.;//occlusion;
 }
 
 void main(){
@@ -202,8 +186,11 @@ void main(){
     p += rayDir * delta;
   }
   color.rgb /= total;
-  // color.rgb *= .8;
+  color.rgb *= .8;
 
+  //     vec3 n = normal(p + .5);
+  // color.rgb = .5 + .5 * n;
+  
   if ( color.a == 0. ) {
     discard;
   }
