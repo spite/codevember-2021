@@ -1,7 +1,12 @@
-import { Vector3 } from "../third_party/three.module.js";
+import { Vector3, Vector2 } from "../third_party/three.module.js";
 import { perlin3 } from "../third_party/perlin.js";
-import { generateTorusFn, sdTorus } from "./TorusKnot.js";
 import { clamp, randomInRange } from "../modules/Maf.js";
+
+function sdTorus(p, t) {
+  const pp = new Vector2(p.x, p.z);
+  const q = new Vector2(pp.length() - t.x, p.y);
+  return q.length() - t.y;
+}
 
 function perlin(x, y, z) {
   return 0.5 + 0.5 * perlin3(x, y, z);
