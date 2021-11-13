@@ -59,7 +59,7 @@ function randomize() {
 randomize();
 
 let running = true;
-let cutting = true;
+let cutting = false;
 
 document.querySelector("#pauseBtn").addEventListener("click", (e) => {
   running = !running;
@@ -69,9 +69,9 @@ document.querySelector("#randomizeBtn").addEventListener("click", (e) => {
   randomize();
 });
 
-// document.querySelector("#cutBtn").addEventListener("click", (e) => {
-//   cutting = !cutting;
-// });
+document.querySelector("#cutBtn").addEventListener("click", (e) => {
+  cutting = !cutting;
+});
 
 let currentCut = 0.5;
 let cut = 0.5;
@@ -97,9 +97,9 @@ window.addEventListener("keydown", (e) => {
   if (e.code === "KeyR") {
     randomize();
   }
-  // if (e.code === "KeyC") {
-  //   cutting = !cutting;
-  // }
+  if (e.code === "KeyC") {
+    cutting = !cutting;
+  }
 });
 
 let time = 0;
@@ -119,10 +119,10 @@ function render() {
     invalidated = true;
   }
 
-  // if (cutting) {
-  //   volume.mesh.material.uniforms.cut.value = 0.1 + 0.4 * Math.sin(time * 1.1);
-  //   invalidated = true;
-  // }
+  if (cutting) {
+    volume.mesh.material.uniforms.cut.value = 0.1 + 0.4 * Math.sin(time * 1.1);
+    invalidated = true;
+  }
 
   if (invalidated) {
     volume.render(camera, time);
