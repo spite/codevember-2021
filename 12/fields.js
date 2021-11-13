@@ -61,8 +61,66 @@ function generateTorus(data, width, height, depth) {
 
 function generateSphere(data, width, height, depth) {
   map(data, width, height, depth, (p) => {
-    return clamp(2 - (p.length() - 1), 0, 1);
+    return clamp(1 - (p.length() - 0.05), 0, 1);
   });
 }
 
-export { generatePerlin, generateGoursat, generateTorus, generateSphere };
+function rot2d(v, a) {
+  const c = Math.cos(a);
+  const s = Math.sin(a);
+  return new Vector2(v.x * c - v.y * s, v.x * s + v.y * c);
+}
+
+function sdCircle(p, r) {
+  return p.length() - r;
+}
+
+function sdBox2d(p, s) {
+  p.x = Math.abs(p.x) - s.x;
+  p.y = Math.abs(p.y) - s.y;
+  p.x = Math.max(p.x, 0);
+  p.y = Math.max(p.y, 0);
+  return p.length() + Math.min(Math.max(p.x, p.y), 0);
+}
+
+function torusBox() {
+  const r1 = randomInRange(1, 1.4);
+  const r2 = randomInRange(0.1, 0.2);
+  const pf = Math.round(Math.random() * 4 * 2) / 2;
+  const oy = Math.random() * 0.5;
+  const s = Math.sign(randomInRange(-1, 1));
+
+  let shapeFn;
+  if (Math.random() < 0.5) {
+    shapeFn = (p) => sdCircle(p, r2);
+  } else {
+    const r3 = randomInRange(0.25, 0.4);
+    const size = new Vector2(r2, r3);
+    shapeFn = (p) => sdBox2d(p, size) - 0.1;
+  }
+
+  return (p) => {
+    const pp = new Vector2(p.x, p.z);
+    const cp = new Vector2(pp.length() - r1, p.y);
+    const a = s * Math.atan2(p.x, p.z);
+    cp.copy(rot2d(cp, a * pf));
+    cp.y = Math.abs(cp.y) - oy;
+    let d = shapeFn(cp);
+    return 0.6 - d;
+  };
+}
+
+function generateTorusKnot(data, width, height, depth) {
+  const torusFn = torusBox();
+  map(data, width, height, depth, (p) => {
+    return torusFn(p.multiplyScalar(5.2));
+  });
+}
+
+export {
+  generateTorusKnot,
+  generatePerlin,
+  generateGoursat,
+  generateTorus,
+  generateSphere,
+};
