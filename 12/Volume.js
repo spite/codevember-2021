@@ -97,7 +97,8 @@ vec2 rotate(vec2 v, float a) {
 }
 
 float sample1( vec3 p ) {
-  // return texture(map, p);
+  // return texture(map, p).r;
+
   vec3 pr = p - .5;
   pr = rotate(pr, vec3(0.,0.,1.), time);
   pr += .5;
