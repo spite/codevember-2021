@@ -7,7 +7,12 @@ import {
 } from "../modules/renderer.js";
 import { Volume } from "./Volume.js";
 import { Post } from "./post.js";
-import { generateGoursat, generateTorus, generatePerlin } from "./fields.js";
+import {
+  generateGoursat,
+  generateTorus,
+  generatePerlin,
+  generateTorusKnot,
+} from "./fields.js";
 // import { capture } from "../modules/capture.js";
 
 camera.position.set(1, -1.6, -0.87);
@@ -27,8 +32,11 @@ renderer.setClearColor(0x101010, 1);
 let volume;
 
 function randomize() {
-  if (Math.random() > 0.5) {
+  const r = Math.random();
+  if (r > 2 / 3) {
     generateGoursat(data, width, height, depth);
+  } else if (r > 1 / 3) {
+    generateTorusKnot(data, width, height, depth);
   } else {
     generateTorus(data, width, height, depth);
   }
@@ -73,7 +81,7 @@ function render() {
   const dt = (t - prevTime) / 1000;
   if (running) {
     time += dt;
-    volume.mesh.material.uniforms.cut.value = 0.1 + 0.4 * Math.sin(time * 1.1);
+    // volume.mesh.material.uniforms.cut.value = 0.1 + 0.4 * Math.sin(time * 1.1);
   }
   volume.render(camera, time);
   prevTime = t;
