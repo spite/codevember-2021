@@ -71,7 +71,7 @@ void main() {
 
   fragColor = screen(color, b,1.);
   fragColor *= vignette(vUv, vignetteBoost, vignetteReduction);
-  // fragColor += .01 * noise(gl_FragCoord.xy + vec2(time, 0.));
+  fragColor += .01 * noise(gl_FragCoord.xy + vec2(time, 0.));
   // fragColor = texture(inputTexture, vUv);
 }
 `;
