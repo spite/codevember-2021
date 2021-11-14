@@ -17,7 +17,7 @@ import {
 import { Light } from "./light.js";
 import { Post } from "./post.js";
 import { material as slitMaterial } from "./SlitMaterial.js";
-import { capture } from "../modules/capture.js";
+// import { capture } from "../modules/capture.js";
 
 // renderer.shadowMap.enabled = true;
 // renderer.shadowMap.type = PCFSoftShadowMap;
@@ -137,7 +137,7 @@ function render() {
 
   // renderer.render(scene, camera);
   post.render(scene, camera);
-  capture(renderer.domElement);
+  // capture(renderer.domElement);
 
   renderer.setAnimationLoop(render);
 }
