@@ -32,14 +32,17 @@ in vec3 vPosition;
 uniform vec3 light1Pos;
 uniform vec3 light1Dir;
 uniform vec3 light1Color;
+uniform float light1Intensity;
 
 uniform vec3 light2Pos;
 uniform vec3 light2Dir;
 uniform vec3 light2Color;
+uniform float light2Intensity;
 
 uniform vec3 light3Pos;
 uniform vec3 light3Dir;
 uniform vec3 light3Color;
+uniform float light3Intensity;
 
 uniform float time;
 
@@ -60,9 +63,9 @@ vec4 GammaToLinear( in vec4 value, in float gammaFactor ) {
 }
 
 void main() {
-  vec3 c1 = calcColor(light1Pos, light1Dir, light1Color);
-  vec3 c2 = calcColor(light2Pos, light2Dir, light2Color);
-  vec3 c3 = calcColor(light3Pos, light3Dir, light3Color);
+  vec3 c1 = calcColor(light1Pos, light1Dir, light1Color * light1Intensity);
+  vec3 c2 = calcColor(light2Pos, light2Dir, light2Color * light2Intensity);
+  vec3 c3 = calcColor(light3Pos, light3Dir, light3Color * light3Intensity);
   fragColor = vec4(c1 + c2 + c3 ,1.);
   float d = .5 + 1./length(vPosition);
   fragColor *= d;
@@ -75,12 +78,15 @@ const material = new RawShaderMaterial({
     light1Pos: { value: new Vector3() },
     light1Dir: { value: new Vector3() },
     light1Color: { value: new Vector3() },
+    light1Intensity: { value: 0 },
     light2Pos: { value: new Vector3() },
     light2Dir: { value: new Vector3() },
     light2Color: { value: new Vector3() },
+    light2Intensity: { value: 0 },
     light3Pos: { value: new Vector3() },
     light3Dir: { value: new Vector3() },
     light3Color: { value: new Vector3() },
+    light3Intensity: { value: 0 },
     time: { value: 0 },
   },
   vertexShader,

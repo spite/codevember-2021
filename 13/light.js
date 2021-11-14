@@ -82,6 +82,11 @@ class Light {
     this.source.position.copy(n);
     this.source.lookAt(center);
     const lum = 0.5 + 0.5 * i.x;
+    this.bulb2Mesh.material.color.setRGB(
+      this.color.r * lum,
+      this.color.g * lum,
+      this.color.b * lum
+    );
     this.light.intensity = lum;
     this.bulbMesh.material.color.setRGB(
       this.color.r * lum,

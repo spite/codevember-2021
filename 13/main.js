@@ -121,16 +121,19 @@ function render() {
     tmp.set(0, 0, -1).applyMatrix4(lights[0].source.matrix);
     cube.material.uniforms.light1Dir.value.copy(tmp);
     cube.material.uniforms.light1Color.value = lights[0].color;
+    cube.material.uniforms.light1Intensity.value = lights[0].light.intensity;
 
     cube.material.uniforms.light2Pos.value.copy(lights[1].position);
     tmp.set(0, 0, -1).applyMatrix4(lights[1].source.matrix);
     cube.material.uniforms.light2Dir.value.copy(tmp);
     cube.material.uniforms.light2Color.value = lights[1].color;
+    cube.material.uniforms.light2Intensity.value = lights[1].light.intensity;
 
     cube.material.uniforms.light3Pos.value.copy(lights[2].position);
     tmp.set(0, 0, -1).applyMatrix4(lights[2].source.matrix);
     cube.material.uniforms.light3Dir.value.copy(tmp);
     cube.material.uniforms.light3Color.value = lights[2].color;
+    cube.material.uniforms.light3Intensity.value = lights[2].light.intensity;
 
     cube.material.uniforms.time.value = time;
   }
