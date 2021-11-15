@@ -12,6 +12,7 @@ import { OrbitControls } from "../third_party/OrbitControls.js";
 const renderer = new WebGLRenderer({
   antialias: true,
   preserveDrawingBuffer: true,
+  powerPreference: "high-performance",
 });
 
 document.body.append(renderer.domElement);
