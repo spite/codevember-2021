@@ -20,13 +20,14 @@ import { OBJLoader } from "../third_party/OBJLoader.js";
 import { mergeGeometries } from "../modules/Geometry.js";
 import { Letter } from "./Letter.js";
 import { Post } from "./post.js";
+// import { capture } from "../modules/capture.js";
 
 const post = new Post(renderer);
 
 renderer.setClearColor(0x101010, 1);
 
 const letter = new Letter("Arvo");
-letter.generate("Z");
+letter.generate("O");
 
 const s = 0.5;
 const scale = new Matrix4().makeScale(s, s, s);
@@ -156,8 +157,10 @@ function render() {
   if (running) {
     distort.update(0.16);
   }
+
   // renderer.render(scene, camera);
   post.render(scene, camera);
+  // capture(renderer.domElement);
   renderer.setAnimationLoop(render);
 }
 
