@@ -3,7 +3,7 @@ import { Vector3 } from "../third_party/three.module.js";
 class Node {
   constructor(x, y, z) {
     this.fixed = false;
-    this.mass = 1;
+    this.mass = 10;
     this.position = new Vector3(x, y, z);
     this.origin = this.position.clone();
     this.velocity = new Vector3(0, 0, 0);
