@@ -68,11 +68,7 @@ const plane = new Mesh(
 plane.visible = false;
 scene.add(plane);
 
-let dragging = false;
-function onMouseMove(event) {
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
+function hitPoint() {
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObject(plane);
 
@@ -80,10 +76,12 @@ function onMouseMove(event) {
   if (intersects.length) {
     point = intersects[0].point;
   }
+}
 
-  if (point && dragging && selectedPoint) {
-    selectedPoint.position.copy(point);
-  }
+function onMouseMove(event) {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  hitPoint();
 }
 
 document.querySelector("#pauseBtn").addEventListener("click", (e) => {
@@ -110,6 +108,10 @@ function initEvents() {
   window.addEventListener("pointerdown", (e) => (changed = false));
 
   window.addEventListener("click", (e) => {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    hitPoint();
+
     if (point && !changed) {
       distort.addImpulse(point);
     }
@@ -132,7 +134,6 @@ function initEvents() {
 }
 
 let point;
-let selectedPoint;
 let running = true;
 
 camera.position.set(0, 0, 2);
@@ -140,19 +141,6 @@ camera.lookAt(scene.position);
 
 function render() {
   plane.lookAt(camera.position);
-  raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObject(plane);
-
-  point = null;
-  if (intersects.length) {
-    point = intersects[0].point;
-  }
-
-  selectedPoint = null;
-  const intersectsPoints = raycaster.intersectObjects(distort.points);
-  if (intersectsPoints.length) {
-    selectedPoint = distort.pointsMap.get(intersectsPoints[0].object);
-  }
 
   if (running) {
     distort.update(0.16);
