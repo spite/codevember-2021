@@ -131,7 +131,7 @@ class Distort {
         uniforms: {
           distortMap: { value: this.texture },
           matCapMap: {
-            value: loader.load("../assets/matcap-cherry_orange.png"),
+            value: loader.load("../assets/matcap-cherry_orange_2k.jpg"),
           },
         },
         vertexShader,
