@@ -42,19 +42,30 @@ vec3 getPoint(in vec3 pos) {
   return texture(distortMap, pos).rgb;
 }
 
+vec3 orthogonal(vec3 v) {
+  return normalize(abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0)
+  : vec3(0.0, -v.z, v.y));
+}
+
 vec3 calcNormal(in vec3 pos) {
   vec3 size = vec3(textureSize(distortMap, 0));
-  float step = 2./size.x;
-  vec3 up = getPoint(pos + vec3(0., step, 0.));
-  vec3 down = getPoint(pos + vec3(0.,- step, 0.));
-  vec3 right = getPoint(pos + vec3( step, 0., 0.));
-  vec3 left = getPoint(pos + vec3(-step, 0., 0.));
+  float offset = 1./size.x;
 
-  vec3 u = up - down;
-  vec3 v = right - left;
-  vec3 n = cross(u,v);
+  vec3 dPos = pos + normal * getPoint(pos);
 
-  return normal + 10.*n;
+  vec3 tangent = orthogonal(normal);
+  vec3 binormal = normalize(cross(normal, tangent));
+  vec3 posT = pos + tangent * offset;
+  vec3 posB = pos + binormal * offset;
+  vec3 dPosT = posT + normal * getPoint(posT);
+  vec3 dPosB = posB + normal * getPoint(posB);
+
+  vec3 dTangent = dPosT - dPos;
+  vec3 dBinormal = dPosB - dPos;
+
+  vec3 displacedNormal = normalize(cross(dTangent, dBinormal));
+
+  return displacedNormal;
 }
 
 void main() {
@@ -94,10 +105,11 @@ vec2 matCapUV(in vec3 eye, in vec3 normal) {
 
 void main() {
 
-  vec3 X = dFdx(vEyePosition);
-  vec3 Y = dFdy(vEyePosition);
-  vec3 normal = normalize(cross(X,Y));
-
+  // vec3 X = dFdx(vEyePosition);
+  // vec3 Y = dFdy(vEyePosition);
+  // vec3 normal = normalize(cross(X,Y));
+  vec3 normal = normalize(vNormal);
+  
   vec2 vN = matCapUV(normalize(vEyePosition.xyz), normal);
   vec4 c = texture(matCapMap, vN);
 
