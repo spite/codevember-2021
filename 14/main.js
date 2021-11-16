@@ -16,11 +16,12 @@ import {
   MeshNormalMaterial,
 } from "../third_party/three.module.js";
 import { Distort } from "./Distort.js";
-import { OBJLoader } from "../third_party/OBJLoader.js";
+import { GLTFLoader } from "../third_party/GLTFLoader.js";
 import { mergeGeometries } from "../modules/Geometry.js";
 import { Letter } from "./Letter.js";
 import { Post } from "./post.js";
 // import { capture } from "../modules/capture.js";
+import "../modules/konami.js";
 
 const post = new Post(renderer);
 
@@ -35,20 +36,18 @@ letter.mc.applyMatrix4(scale);
 
 let distort;
 
-function loadSuzanne() {
-  const objLoader = new OBJLoader();
-  objLoader.load("../assets/suzanne-hq.obj", (obj) => {
-    const suzanneGeo = mergeGeometries(
-      obj.children[0].geometry,
-      obj.children[1].geometry
-    );
-    const mat = new Matrix4().makeRotationX(-Math.PI / 2);
-    suzanneGeo.applyMatrix4(mat);
-    const s = 0.4;
-    const scale = new Matrix4().makeScale(s, s, s);
-    suzanneGeo.applyMatrix4(scale);
-    suzanneGeo.computeVertexNormals();
-    init(suzanneGeo);
+async function loadSuzanne() {
+  return new Promise((resolve, reject) => {
+    const loader = new GLTFLoader();
+    loader.load("../assets/suzanne.glb", (scene) => {
+      const suzanneGeo = scene.scenes[0].children[0].geometry;
+      const mat = new Matrix4().makeRotationX(-Math.PI / 2);
+      suzanneGeo.applyMatrix4(mat);
+      const s = 0.4;
+      const scale = new Matrix4().makeScale(s, s, s);
+      suzanneGeo.applyMatrix4(scale);
+      resolve(suzanneGeo);
+    });
   });
 }
 
@@ -106,6 +105,11 @@ function initEvents() {
   });
 
   window.addEventListener("pointerdown", (e) => (changed = false));
+
+  window.addEventListener("konami-code", async (e) => {
+    const suzanneGeo = await loadSuzanne();
+    distort.objectMesh.geometry = suzanneGeo;
+  });
 
   window.addEventListener("click", (e) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
