@@ -260,9 +260,9 @@ function onMouseMove(event) {
 window.addEventListener("pointermove", onMouseMove, false);
 
 window.addEventListener("pointerdown", (e) => {
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  if (isTouchDevice()) {
+  mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  if (isTouchDevice() && follow) {
     checkInBox();
     if (inBox) {
       controls.enableRotate = false;
