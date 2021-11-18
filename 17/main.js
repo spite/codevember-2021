@@ -19,6 +19,10 @@ import {
   DataTexture3D,
   RGBFormat,
   DataTexture,
+  BoxBufferGeometry,
+  LineSegments,
+  LineBasicMaterial,
+  BufferGeometry,
 } from "../third_party/three.module.js";
 import { GradientLinear } from "../modules/gradient-linear.js";
 import { natural } from "../modules/palettes.js";
@@ -154,6 +158,14 @@ randomize();
 let running = true;
 let follow = true;
 
+function isTouchDevice() {
+  return (
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    navigator.msMaxTouchPoints > 0
+  );
+}
+
 window.addEventListener("keydown", (e) => {
   if (e.code === "KeyR") {
     randomize();
@@ -186,9 +198,41 @@ const plane = new Mesh(
 );
 plane.visible = false;
 scene.add(plane);
+const box = new Mesh(
+  new BoxBufferGeometry(1, 1, 1),
+  new MeshNormalMaterial({ wireframe: true })
+);
+box.visible = false;
+scene.add(box);
+
+const segmentVertices = [
+  new Vector3(-0.5, -0.5, -0.5),
+  new Vector3(0.5, -0.5, -0.5),
+  new Vector3(-0.5, -0.5, -0.5),
+  new Vector3(-0.5, -0.5, 0.5),
+  new Vector3(-0.5, -0.5, 0.5),
+  new Vector3(0.5, -0.5, 0.5),
+  new Vector3(0.5, -0.5, 0.5),
+  new Vector3(0.5, -0.5, -0.5),
+
+  new Vector3(-0.5, 0.5, -0.5),
+  new Vector3(0.5, 0.5, -0.5),
+  new Vector3(-0.5, 0.5, -0.5),
+  new Vector3(-0.5, 0.5, 0.5),
+  new Vector3(-0.5, 0.5, 0.5),
+  new Vector3(0.5, 0.5, 0.5),
+  new Vector3(0.5, 0.5, 0.5),
+  new Vector3(0.5, 0.5, -0.5),
+];
+const linesGeometry = new BufferGeometry().setFromPoints(segmentVertices);
+const segments = new LineSegments(
+  linesGeometry,
+  new LineBasicMaterial({ color: 0x404040 })
+);
+scene.add(segments);
 
 let point;
-let changed = false;
+let inBox = false;
 
 function hitPoint() {
   raycaster.setFromCamera(mouse, camera);
@@ -200,6 +244,13 @@ function hitPoint() {
   }
 }
 
+function checkInBox() {
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObject(box);
+  inBox = intersects.length;
+  console.log(inBox);
+}
+
 function onMouseMove(event) {
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -208,16 +259,25 @@ function onMouseMove(event) {
 
 window.addEventListener("pointermove", onMouseMove, false);
 
-controls.addEventListener("change", (e) => {
-  changed = true;
+window.addEventListener("pointerdown", (e) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  if (isTouchDevice()) {
+    checkInBox();
+    if (inBox) {
+      controls.enableRotate = false;
+    }
+  }
 });
 
-window.addEventListener("pointerdown", (e) => (changed = false));
+window.addEventListener("pointerup", (e) => {
+  controls.enableRotate = true;
+});
 
 const simulation = new Simulation(1024, 1024, fieldTexture, colorTexture);
 scene.add(simulation.mesh);
 
-camera.position.set(1, 0, 1);
+camera.position.set(1, 0, 1).multiplyScalar(1.5);
 camera.lookAt(scene.position);
 
 const post = new Post(renderer);
@@ -229,7 +289,6 @@ const up = new Vector3(0, 1, 0);
 
 function render() {
   plane.lookAt(camera.position);
-
   const t = performance.now();
   const dt = t - prevTime;
   if (running) {
