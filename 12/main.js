@@ -84,6 +84,7 @@ window.addEventListener("pointermove", (e) => {
 });
 
 window.addEventListener("click", (e) => {
+  if (e.target !== renderer.domElement) return;
   cut = e.pageY / window.innerHeight;
   invalidated = true;
   e.preventDefault();
