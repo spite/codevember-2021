@@ -13,7 +13,6 @@ import {
   generateTorus,
   generateBlob,
   generatePerlin,
-  generateIcosahedron,
   generateHyperelliptic,
   generateSphere,
 } from "./fields.js";
@@ -47,10 +46,8 @@ function randomize() {
     generateGoursat,
     generateHyperelliptic,
     generateTorus,
-    // // generateTorusKnot,
     generateSphere,
     generateBlob,
-    generateIcosahedron,
   ];
   const ptr = Math.floor(Math.random() * generators.length);
   generators[ptr](data, width, height, depth);

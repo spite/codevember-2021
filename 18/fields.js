@@ -309,7 +309,7 @@ function generateIcosahedron(data, width, height, depth) {
 }
 
 export {
-  generateIcosahedron,
+  // generateIcosahedron,
   generateBlob,
   generateTorusKnot,
   generateHyperelliptic,
