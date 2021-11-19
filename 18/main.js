@@ -71,8 +71,12 @@ randomize();
 
 let running = true;
 let cutting = false;
+let changed = false;
 
-controls.addEventListener("change", (e) => (invalidated = true));
+controls.addEventListener("change", (e) => {
+  changed = true;
+  invalidated = true;
+});
 
 document.querySelector("#pauseBtn").addEventListener("click", (e) => {
   running = !running;
@@ -89,6 +93,8 @@ document.querySelector("#cutBtn").addEventListener("click", (e) => {
 let currentCut = 0.5;
 let cut = 0.5;
 
+window.addEventListener("pointerdown", (e) => (changed = false));
+
 window.addEventListener("pointermove", (e) => {
   cut = 0.2 + (0.6 * e.pageY) / window.innerHeight;
   invalidated = true;
@@ -98,8 +104,10 @@ window.addEventListener("pointermove", (e) => {
 
 window.addEventListener("click", (e) => {
   if (e.target !== renderer.domElement) return;
-  cut = e.pageY / window.innerHeight;
-  invalidated = true;
+  if (!changed) {
+    cut = e.pageY / window.innerHeight;
+    invalidated = true;
+  }
   e.preventDefault();
   e.stopPropagation();
 });
@@ -150,12 +158,11 @@ function render() {
   // capture(renderer.domElement);
   // frames++;
   // if (frames % 60 === 0) {
-  //   cut = randomInRange(0.3, 0.8);
+  //   cut = randomInRange(0.4, 0.6);
   // }
   // if (frames % 120 === 0) {
   //   randomize();
   // }
-
   renderer.setAnimationLoop(render);
 }
 
