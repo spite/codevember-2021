@@ -35,6 +35,7 @@ function resize() {
   renderer.setSize(w, h);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
+  renderer.setPixelRatio(window.devicePixelRatio);
   const dPR = renderer.getPixelRatio();
 
   for (const fn of resizes) {
