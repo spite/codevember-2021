@@ -146,13 +146,6 @@ const simulation = new Simulation(1024, 1024, colorTexture);
 scene.add(simulation.mesh);
 simulation.mesh.renderOrder = 2;
 
-window.addEventListener("keydown", (e) => {
-  if (e.code === "KeyR") {
-    simulation.simShader.uniforms.friction.value = randomInRange(0, 1);
-    simulation.simShader.uniforms.scatter.value = randomInRange(0, 1);
-  }
-});
-
 let prevTime = performance.now();
 let frames = 0;
 let capturing = false;
