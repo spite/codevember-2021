@@ -15,7 +15,6 @@ import {
   OrthographicCamera,
   PlaneBufferGeometry,
   Mesh,
-  Vector3,
   Quaternion,
 } from "../third_party/three.module.js";
 import { getFBO } from "../modules/fbo.js";
@@ -51,7 +50,7 @@ void main() {
   // d = smoothstep(.25, .65, d) ;
   vColor = texture(gradient, vec2(d, 0.)).rgb; 
 
-  gl_PointSize = 2. * dpr / gl_Position.z;
+  gl_PointSize = 2.5 * dpr / gl_Position.z;
 }`;
 
 const particleFs = `precision highp float;
