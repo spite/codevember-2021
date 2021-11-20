@@ -18,6 +18,18 @@
         position: relative;
         margin: 2px;
       }
+      @media (max-width: 800px) { 
+        li {
+          width: calc((100vw - 80px - 4px)/2);
+          height: calc((100vw - 80px - 4px)/3 + 4em);
+        }
+      }
+      @media (max-width: 400px) { 
+       li {
+          width: calc((100vw - 80px - 2px));
+          height: calc((100vw - 80px - 2px)/1.5 + 4em);
+        }
+      }
       li a {
         background-size: contain;
         background-repeat: no-repeat;
