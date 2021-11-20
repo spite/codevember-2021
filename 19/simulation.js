@@ -27,6 +27,7 @@ in vec3 position;
 uniform sampler2D positions;
 uniform sampler2D velocities;
 uniform sampler2D gradient;
+uniform float dpr;
 
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
@@ -50,7 +51,7 @@ void main() {
   // d = smoothstep(.25, .65, d) ;
   vColor = texture(gradient, vec2(d, 0.)).rgb; 
 
-  gl_PointSize = 5. / gl_Position.z;
+  gl_PointSize = 2. * dpr / gl_Position.z;
 }`;
 
 const particleFs = `precision highp float;
@@ -271,6 +272,7 @@ class Simulation {
         positions: { value: posTexture },
         velocities: { value: velTexture },
         gradient: { value: color },
+        dpr: { value: 1 },
       },
       vertexShader: particleVs,
       fragmentShader: particleFs,
@@ -351,6 +353,7 @@ class Simulation {
       this.simShader.uniforms.rotation.value
     );
     this.simShader.uniforms.rotation.value.copy(rot);
+    this.shader.uniforms.dpr.value = renderer.getPixelRatio();
 
     this.simShader.uniforms.positions.value = false;
     renderer.setRenderTarget(this.velocityFBOs[1 - this.current]);
