@@ -252,7 +252,7 @@ class Curve {
       0.1,
       0.1,
       1,
-      360,
+      36,
       this.numPoints - 1,
       true
     );
