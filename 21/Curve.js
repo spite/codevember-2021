@@ -5,7 +5,7 @@ import {
   CylinderBufferGeometry,
   RawShaderMaterial,
   DataTexture,
-  RGBAFormat,
+  RGBFormat,
   FloatType,
   GLSL3,
   LinearFilter,
@@ -27,7 +27,7 @@ vec3 getPoint(in float t) {
   vec2 size = vec2(textureSize(pointsMap, 0));
   vec2 uv = vec2(t, 0.) + 0./size;
   vec4 p = texture(pointsMap, uv);
-  return p.xyz * p.w;
+  return p.xyz;
 }
 
 const float MAX_NUMBER = 1.79769313e+308;
@@ -187,7 +187,7 @@ void main() {
   vec2 vN = matCapUV(normalize(vEyePosition.xyz), vNormal);
   vec4 c = texture(matCapMap, vN);
 
-  fragColor = vec4(c.rgb, 1.);
+  fragColor = vec4(c.rgb * parabola(vUv.y, 1.), 1.);
 }`;
 
 class Point {
@@ -218,7 +218,7 @@ class Curve {
 
     this.points = [];
     this.initialised = false;
-    this.vertices = new Float32Array(this.numPoints * 4);
+    this.vertices = new Float32Array(this.numPoints * 3);
     for (let i = 0; i < this.vertices.length; i++) {
       this.vertices[i] = 0;
     }
@@ -227,7 +227,7 @@ class Curve {
       this.vertices,
       this.numPoints,
       1,
-      RGBAFormat,
+      RGBFormat,
       FloatType,
       undefined,
       undefined,
@@ -240,7 +240,7 @@ class Curve {
         segments: { value: this.numPoints },
         pointsMap: { value: this.pointsTexture },
         matCapMap: {
-          value: loader.load("../assets/matcap-cherry_orange_1k.jpg"),
+          value: loader.load("../assets/matcap-cherry_1k.jpg"),
         },
       },
       vertexShader,
@@ -274,7 +274,7 @@ class Curve {
     this.points[0].position.copy(point);
   }
 
-  step() {
+  step(dt) {
     let spring = this.spring;
     const dampening = this.dampening;
     const friction = this.friction;
@@ -301,10 +301,9 @@ class Curve {
     const e = 0.0001;
     for (let j = 0; j < this.points.length; j++) {
       const p = this.points[j].position;
-      this.vertices[j * 4] = p.x + randomInRange(-e, e);
-      this.vertices[j * 4 + 1] = p.y + randomInRange(-e, e);
-      this.vertices[j * 4 + 2] = p.z + randomInRange(-e, e);
-      this.vertices[j * 4 + 3] = 1; // p.updated ? 1 : 0;
+      this.vertices[j * 3] = p.x + randomInRange(-e, e);
+      this.vertices[j * 3 + 1] = p.y + randomInRange(-e, e);
+      this.vertices[j * 3 + 2] = p.z + randomInRange(-e, e);
     }
     this.pointsTexture.needsUpdate = true;
   }
