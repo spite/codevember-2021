@@ -13,11 +13,11 @@ import {
   Mesh,
   PlaneBufferGeometry,
   MeshNormalMaterial,
-  BoxBufferGeometry,
   Vector3,
 } from "../third_party/three.module.js";
 import { Curve } from "./Curve.js";
 import { Post } from "./post.js";
+// import { capture } from "../modules/capture.js";
 
 const post = new Post(renderer);
 
