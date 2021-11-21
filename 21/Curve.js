@@ -292,6 +292,8 @@ class Curve {
       cur.velocity.z += prev.velocity.z * dampening;
       cur.velocity.multiplyScalar(friction);
 
+      cur.velocity.clampLength(0, 0.05); // clamp to prevent craziness
+
       cur.position.add(cur.velocity);
       spring *= tension;
     }
