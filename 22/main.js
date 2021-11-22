@@ -76,6 +76,7 @@ function onMouseMove(event) {
 }
 
 window.addEventListener("pointermove", onMouseMove, false);
+window.addEventListener("pointerdown", onMouseMove, false);
 
 const attraction = new Attraction(point, 200, 0.02);
 const repulsion = new Attraction(point, 1, -0.4);
