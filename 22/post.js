@@ -212,15 +212,15 @@ class Post {
     this.bloomPass.render(this.renderer);
 
     this.finalPass.shader.uniforms.blur0Texture.value =
-      this.bloomPass.blurPasses[0].current.texture;
+      this.bloomPass.blurPasses[0].prev.texture;
     this.finalPass.shader.uniforms.blur1Texture.value =
-      this.bloomPass.blurPasses[1].current.texture;
+      this.bloomPass.blurPasses[1].prev.texture;
     this.finalPass.shader.uniforms.blur2Texture.value =
-      this.bloomPass.blurPasses[2].current.texture;
+      this.bloomPass.blurPasses[2].prev.texture;
     this.finalPass.shader.uniforms.blur3Texture.value =
-      this.bloomPass.blurPasses[3].current.texture;
+      this.bloomPass.blurPasses[3].prev.texture;
     this.finalPass.shader.uniforms.blur4Texture.value =
-      this.bloomPass.blurPasses[4].current.texture;
+      this.bloomPass.blurPasses[4].prev.texture;
     this.finalPass.shader.uniforms.time.value = Math.random() * 100000;
 
     this.finalPass.render(this.renderer, true);
