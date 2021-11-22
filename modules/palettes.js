@@ -35,5 +35,32 @@ const seaside = [
   "#D23401",
   "#B0A12F",
 ];
+const warm2 = [
+  "#FFFEFE",
+  "#0D0211",
+  "#FBCEA0",
+  "#FFAD5D",
+  "#530E1D",
+  "#FE9232",
+  "#B93810",
+  "#907996",
+];
+const warm3 = [
+  "#EDEBE7",
+  "#13595A",
+  "#DE1408",
+  "#161814",
+  "#E1610A",
+  "#B7BDB3",
+  "#9F9772",
+];
+const circus2 = [
+  "#F62D62",
+  "#FFFFFF",
+  "#FDB600",
+  "#F42D2D",
+  "#544C98",
+  "#ECACBC",
+];
 
-export { warm, natural, natural2, circus, seaside };
+export { warm, natural, natural2, circus, seaside, warm2, warm3, circus2 };
