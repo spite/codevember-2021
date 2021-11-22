@@ -226,6 +226,8 @@ function render() {
   center.position.copy(point);
   center.lookAt(prevPoint);
   t.copy(point).sub(prevPoint);
+  center.scale.x = clamp(1 - t.length() * 2, 0.1, 10);
+  center.scale.y = clamp(1 - t.length() * 2, 0.1, 10);
   center.scale.z = 1 + t.length() * 10;
   prevPoint.copy(point);
 
@@ -241,7 +243,12 @@ function render() {
     const p = physics.particles[i];
     dummy.position.copy(p.position);
     const v = Math.exp(p.velocity.length() * p.mass * 20) - 1;
-    dummy.scale.set(p.mass, p.mass, clamp(p.mass + v, 0, 3 * p.mass));
+    const f = 1.5;
+    dummy.scale.set(
+      clamp(p.mass - v, p.mass / f, p.mass),
+      clamp(p.mass - v, p.mass / f, p.mass),
+      clamp(p.mass + v, 0, f * p.mass)
+    );
     t.copy(p.position).add(p.velocity);
     dummy.lookAt(t);
     dummy.updateMatrix();
