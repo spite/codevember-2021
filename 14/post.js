@@ -72,7 +72,6 @@ void main() {
   fragColor = screen(color, b,1.);
   fragColor *= vignette(vUv, vignetteBoost, vignetteReduction);
   fragColor += .01 * noise(gl_FragCoord.xy + vec2(time, 0.));
-  // fragColor = texture(inputTexture, vUv);
 }
 `;
 
@@ -156,7 +155,6 @@ class Post {
       wrapT: ClampToEdgeWrapping,
     });
 
-    this.bloomPass = new BloomPass(5, 5);
   }
 
   setSize(w, h) {
@@ -179,15 +177,15 @@ class Post {
     this.bloomPass.render(this.renderer);
 
     this.finalPass.shader.uniforms.blur0Texture.value =
-      this.bloomPass.blurPasses[0].prev.texture;
+      this.bloomPass.blurPasses[0].texture;
     this.finalPass.shader.uniforms.blur1Texture.value =
-      this.bloomPass.blurPasses[1].prev.texture;
+      this.bloomPass.blurPasses[1].texture;
     this.finalPass.shader.uniforms.blur2Texture.value =
-      this.bloomPass.blurPasses[2].prev.texture;
+      this.bloomPass.blurPasses[2].texture;
     this.finalPass.shader.uniforms.blur3Texture.value =
-      this.bloomPass.blurPasses[3].prev.texture;
+      this.bloomPass.blurPasses[3].texture;
     this.finalPass.shader.uniforms.blur4Texture.value =
-      this.bloomPass.blurPasses[4].prev.texture;
+      this.bloomPass.blurPasses[4].texture;
     this.finalPass.shader.uniforms.time.value = Math.random() * 100000;
 
     this.finalPass.render(this.renderer, true);

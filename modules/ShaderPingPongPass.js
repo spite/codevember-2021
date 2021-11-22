@@ -24,7 +24,6 @@ class ShaderPingPongPass {
     this.orthoQuad = new Mesh(new PlaneBufferGeometry(1, 1), this.shader);
     this.orthoQuad.scale.set(1, 1, 1);
     this.orthoScene.add(this.orthoQuad);
-    this.texture = this.fbo.texture;
   }
 
   render(renderer, final) {
@@ -42,6 +41,10 @@ class ShaderPingPongPass {
 
   get prev() {
     return this.fbos[1 - this.currentFBO];
+  }
+
+  get texture() {
+    return this.current.texture;
   }
 
   setSize(width, height) {

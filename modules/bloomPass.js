@@ -23,6 +23,9 @@ class BloomPass {
     this.strength = strength;
     this.levels = levels;
     this.blurPasses = [];
+    this.width = 1;
+    this.height = 1;
+    this.aspectRatio = 1;
     for (let i = 0; i < this.levels; i++) {
       const blurPass = new ShaderPingPongPass(blurShader, {
         format: RGBAFormat,
@@ -32,6 +35,9 @@ class BloomPass {
   }
 
   setSize(w, h) {
+    this.width = w;
+    this.height = h;
+    this.aspectRatio = w / h;
     let tw = w;
     let th = h;
     for (let i = 0; i < this.levels; i++) {
@@ -49,16 +55,18 @@ class BloomPass {
 
   render(renderer) {
     let offset = this.strength;
+    const u = blurShader.uniforms;
     for (let j = 0; j < this.levels; j++) {
-      blurShader.uniforms.direction.value.set(offset, 0);
       const blurPass = this.blurPasses[j];
+
+      u.direction.value.set(offset, 0);
       blurPass.render(renderer);
-      blurShader.uniforms.inputTexture.value =
-        blurPass.fbos[blurPass.currentFBO].texture;
-      blurShader.uniforms.direction.value.set(0, offset);
+
+      u.inputTexture.value = blurPass.current.texture;
+      u.direction.value.set(0, offset / 2);
+
       blurPass.render(renderer);
-      blurShader.uniforms.inputTexture.value =
-        blurPass.fbos[blurPass.currentFBO].texture;
+      u.inputTexture.value = blurPass.current.texture;
     }
   }
 }
