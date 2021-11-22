@@ -242,7 +242,7 @@ function render() {
   for (let i = 0; i < physics.particles.length; i++) {
     const p = physics.particles[i];
     dummy.position.copy(p.position);
-    const v = Math.exp(p.velocity.length() * p.mass * 20) - 1;
+    const v = Math.log(1 + p.velocity.length() * p.mass * 5);
     const f = 1.5;
     dummy.scale.set(
       clamp(p.mass - v, p.mass / f, p.mass),
