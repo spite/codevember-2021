@@ -17,32 +17,18 @@ import {
 import { Volume } from "./Volume.js";
 import { Post } from "./post.js";
 import { generatePerlin } from "./fields.js";
-import { capture } from "../modules/capture.js";
-import { GradientLinear } from "../modules/gradient-linear.js";
-import { natural } from "../modules/palettes.js";
-import { randomInRange } from "../modules/Maf.js";
-
-const palette = natural;
-const gradient = new GradientLinear(palette);
+// import { capture } from "../modules/capture.js";
 
 camera.position.set(1, -1.6, -0.87);
 camera.lookAt(scene.position);
 
 const post = new Post(renderer);
 
-const size = 128;
-const width = size;
-const height = size;
-const depth = size;
-const data = new Float32Array(width * height * depth);
-const noiseData = new Float32Array(width * height * depth);
-
 renderer.setClearColor(0xdddddd, 1);
 
 let invalidated = true;
 
-generatePerlin(noiseData, width, height, depth);
-const volume = new Volume(noiseData, width, height, depth);
+const volume = new Volume();
 scene.add(volume.mesh);
 
 const hitPlane = new Mesh(
@@ -53,7 +39,6 @@ hitPlane.visible = false;
 scene.add(hitPlane);
 
 let running = true;
-let changed = false;
 
 const raycaster = new Raycaster();
 const mouse = new Vector2();
@@ -79,27 +64,12 @@ function onPointer(e) {
 }
 
 controls.addEventListener("change", (e) => {
-  changed = true;
   invalidated = true;
 });
-
-document.querySelector("#pauseBtn").addEventListener("click", (e) => {
-  running = !running;
-});
-
-window.addEventListener("pointerdown", (e) => (changed = false));
 
 window.addEventListener("pointermove", (e) => {
   onPointer(e);
   hitTest();
-  e.preventDefault();
-  e.stopPropagation();
-});
-
-window.addEventListener("click", (e) => {
-  if (e.target !== renderer.domElement) return;
-  if (!changed) {
-  }
   e.preventDefault();
   e.stopPropagation();
 });
@@ -138,7 +108,7 @@ function render() {
   // renderer.render(scene, camera);
   post.render(scene, camera);
 
-  capture(renderer.domElement);
+  // capture(renderer.domElement);
 
   renderer.setAnimationLoop(render);
 }
