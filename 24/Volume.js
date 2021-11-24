@@ -170,9 +170,9 @@ void main(){
   if (bounds.x >= bounds.y) discard;
   bounds.x = max(bounds.x, 0.);
 
-  vec3 p = vOrigin + bounds.x * rayDir;
+  vec3 p = vOrigin + bounds.y * rayDir;
   vec3 rayDir2 = rayDir;
-  vec3 p2 = vOrigin + bounds.x * rayDir2;
+  vec3 p2 = vOrigin + bounds.y * rayDir2;
 
   vec3 inc = 1.0 / abs(rayDir);
   float delta = min(inc.x, min(inc.y, inc.z));
@@ -198,15 +198,21 @@ void main(){
   float depth = 0.;
   for (float t = bounds.x; t < bounds.y; t += delta) {
     float d = egg(p);
-     if ( (d < 0. && prev >= 0.) || (d >0. && prev <= 0.)) {
+    // if(d<0.) {
+    //   rim += 1. / steps;
+    //   total++;
+    // } else {
+    //   rim += d / steps;
+    // }
+    if ( (d < 0. && prev >= 0.) || (d >0. && prev <= 0.)) {
       vec3 n = normal(p);
       vec3 e = normalize(-rayDir);
       float cm = sampleEnvMap(reflect(e,n), envMap, 0.).r;
       cm = pow(cm, 5.);
       float r = 1. - max(0., dot(e, n));
       rim += r;
-      ref += pow(r, 4.) * cm / depth;
-      rayDir2 = refract(rayDir, n, .85);
+      ref += r * cm ;/// depth;
+      rayDir2 = refract(rayDir, -n, .85);
       total++;
     }
     if(d < 0.) {
@@ -241,8 +247,8 @@ void main(){
       }
     }
     prev = d;
-    p += rayDir * delta;
-    p2 += rayDir2 * delta;
+    p -= rayDir * delta;
+    p2 -= rayDir2 * delta;
     depth += .01;
   }
   rim /= total;
@@ -260,8 +266,11 @@ void main(){
   c = mix(c, yolkColor, yolkMask);
 
   fragColor.rgb = c * rim;
-  fragColor.rgb = screen(fragColor.rgb, vec3(4.*ref), 1.);
+  fragColor.rgb = screen(fragColor.rgb, vec3(ref + 4.* ref * pow(r,5.)), 1.);
   fragColor.a = alpha;
+
+  // fragColor.rgb = vec3(yolkMask);
+  // fragColor.a = 1.;
 }
 `;
 
@@ -270,7 +279,7 @@ const envMap = loader.load("../assets/kiara_interior_2k.jpg");
 envMap.wrapS = envMap.wrapT = RepeatWrapping;
 
 class Volume {
-  constructor(width, height, depth) {
+  constructor() {
     const geo = new BoxBufferGeometry(1, 1, 1);
     const mat = new RawShaderMaterial({
       uniforms: {
