@@ -197,10 +197,7 @@ function randomize() {
   //mesh.castShadow = mesh.receiveShadow = true;
   scene.add(mesh);
 
-  const map = new Map();
-  for (const s of leafSquares) {
-    s.color = gradient.getAt(randomInRange(0, 1));
-  }
+  invalidated = true;
 }
 
 let running = true;
@@ -212,7 +209,6 @@ window.addEventListener("keydown", (e) => {
   }
   if (e.code === "KeyR") {
     randomize();
-    invalidated = true;
   }
 });
 
