@@ -160,7 +160,7 @@ function render() {
   // capture(renderer.domElement);
 
   frames++;
-  if (frames > 120 && running && shuffling) {
+  if (frames > 240 && running && shuffling) {
     frames = 0;
     randomize();
   }

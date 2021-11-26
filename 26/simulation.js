@@ -47,7 +47,7 @@ void main() {
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos.xyz - .5, 1. );
   vLife = pos.w / 100.;
   vColor = texture(gradient, vec2(vLife, 0.)).rgb * vLife; 
-  gl_PointSize = 2.5 * dpr / gl_Position.z;
+  gl_PointSize = (2.5 * parabola(vLife, 1.)) * dpr / gl_Position.z;
 }`;
 
 const particleFs = `precision highp float;
@@ -102,6 +102,7 @@ uniform float persistence;
 uniform float time;
 uniform float sphereRadius;
 uniform float signDir;
+uniform float value;
 
 out vec4 fragColor;
 
@@ -215,7 +216,7 @@ class Simulation {
         velocities: { value: velTexture },
         gradient: { value: null },
         dpr: { value: 1 },
-        opacity: { value: 0.5 },
+        opacity: { value: 0.25 },
       },
       vertexShader: particleVs,
       fragmentShader: particleFs,
