@@ -178,7 +178,7 @@ function randomize() {
   while (group.children.length) {
     group.remove(group.children[0]);
   }
-  const worley = new WorleyNoise({ numPoints: 20 });
+  const worley = new WorleyNoise(20);
 
   const voronoiSize = 50;
   const data = new Float32Array(voronoiSize * voronoiSize * voronoiSize * 2);
@@ -271,10 +271,10 @@ rand();
 
 function rand() {
   generating.style.display = "flex";
-  //setTimeout(() => {
-  randomize();
-  generating.style.display = "none";
-  //}, 10);
+  setTimeout(() => {
+    randomize();
+    generating.style.display = "none";
+  }, 10);
 }
 
 let time = 0;
