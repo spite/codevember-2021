@@ -546,6 +546,8 @@ class MarchingCubesGeometry extends BufferGeometry {
       console.warn(
         "THREE.MarchingCubesGeometry: Geometry buffers too small for rendering. Please create an instance with a higher poly count."
       );
+
+    return this.count;
   }
 }
 
