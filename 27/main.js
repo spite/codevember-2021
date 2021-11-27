@@ -142,7 +142,11 @@ function sdRoundedCylinder(p, ra, rb, h) {
     new Vector2(p.x, p.z).length() - 2.0 * ra + rb,
     Math.abs(p.y) - h
   );
-  return Math.min(Math.max(d.x, d.y), 0.0) + Math.max(d.length(), 0.0) - rb;
+  d.x = Math.max(d.x, 0);
+  d.y = Math.max(d.y, 0);
+  d.z = Math.max(d.z, 0);
+
+  return Math.min(Math.max(d.x, d.y), 0.0) + d.length() - rb;
 }
 
 const group = new Group();
@@ -210,7 +214,7 @@ function randomize() {
     (p) => sdSphere(p, 0.4),
     (p) => sdOctahedron(p, 0.4),
     (p) => sdRoundBox(p, box, 0.01),
-    // (p) => sdRoundedCylinder(p, 0.2, 0.2, 0.5),
+    (p) => sdRoundedCylinder(p, 0.2, 0.2, 0.25),
   ];
   let dFn = fns[Math.floor(Math.random() * fns.length)];
 
