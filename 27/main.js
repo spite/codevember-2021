@@ -209,12 +209,13 @@ function randomize() {
 
   const q = new Vector2(0.3, 0.15);
   const box = new Vector3(0.25, 0.25, 0.25);
+  const cylRadius = randomInRange(0.1, 0.2);
   const fns = [
     (p) => sdTorus(p, q),
     (p) => sdSphere(p, 0.4),
     (p) => sdOctahedron(p, 0.4),
     (p) => sdRoundBox(p, box, 0.01),
-    (p) => sdRoundedCylinder(p, 0.2, 0.2, 0.25),
+    (p) => sdRoundedCylinder(p, cylRadius, cylRadius, 0.25),
   ];
   let dFn = fns[Math.floor(Math.random() * fns.length)];
 
@@ -302,15 +303,15 @@ let prevTime = performance.now();
 
 let frames = 0;
 
-document.querySelector("#pauseBtn", (e) => {
+document.querySelector("#pauseBtn").addEventListener("click", (e) => {
   running = !running;
 });
 
-document.querySelector("#randomizeBtn", (e) => {
+document.querySelector("#randomizeBtn").addEventListener("click", (e) => {
   rand();
 });
 
-document.querySelector("#breakBtn", (e) => {
+document.querySelector("#breakBtn").addEventListener("click", (e) => {
   running = true;
 });
 
