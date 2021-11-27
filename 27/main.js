@@ -123,6 +123,20 @@ function sdOctahedron(p, s) {
   return (p.x + p.y + p.z - s) * 0.57735027;
 }
 
+function sdRoundBox(p, b, r) {
+  const q = p.clone();
+  q.x = Math.abs(q.x);
+  q.y = Math.abs(q.y);
+  q.z = Math.abs(q.z);
+  q.sub(b);
+
+  q.x = Math.max(q.x, 0);
+  q.y = Math.max(q.y, 0);
+  q.z = Math.max(q.z, 0);
+
+  return q.length() + Math.min(Math.max(q.x, Math.max(q.y, q.z)), 0.0) - r;
+}
+
 function sdRoundedCylinder(p, ra, rb, h) {
   const d = new Vector2(
     new Vector2(p.x, p.z).length() - 2.0 * ra + rb,
@@ -190,10 +204,12 @@ function randomize() {
   const p = new Vector3();
 
   const q = new Vector2(0.3, 0.15);
+  const box = new Vector3(0.25, 0.25, 0.25);
   const fns = [
     (p) => sdTorus(p, q),
     (p) => sdSphere(p, 0.4),
     (p) => sdOctahedron(p, 0.4),
+    (p) => sdRoundBox(p, box, 0.01),
     // (p) => sdRoundedCylinder(p, 0.2, 0.2, 0.5),
   ];
   let dFn = fns[Math.floor(Math.random() * fns.length)];
