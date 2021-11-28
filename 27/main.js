@@ -32,7 +32,7 @@ import {
   NearestFilter,
   RepeatWrapping,
 } from "../third_party/three.module.js";
-import { scale, randomInRange } from "../modules/Maf.js";
+import { scale, randomInRange, clamp, mix } from "../modules/Maf.js";
 import { WorleyNoise } from "./worley.js";
 import { relax, precalcNeighbours } from "./relax.js";
 import { toIndexed } from "../23/toIndexed.js";
@@ -198,6 +198,40 @@ function sdRoundedCylinder(p, ra, rb, h) {
   return Math.min(Math.max(d.x, d.y), 0.0) + d.length() - rb;
 }
 
+function opSmoothUnion(d1, d2, k) {
+  const h = clamp(0.5 + (0.5 * (d2 - d1)) / k, 0.0, 1.0);
+  return mix(d2, d1, h) - k * h * (1.0 - h);
+}
+
+function generateBlobFn() {
+  const points = [];
+  const radii = [];
+  for (let i = 0; i < 5; i++) {
+    const r = randomInRange(0.15, 0.25);
+    radii.push(r);
+    const d = 0.45 - r;
+    points.push(
+      new Vector3(
+        randomInRange(-d, d),
+        randomInRange(-d, d),
+        randomInRange(-d, d)
+      )
+    );
+  }
+  return (p) => {
+    let d;
+    for (let i = 0; i < points.length; i++) {
+      const v = sdSphere(p.clone().sub(points[i]), radii[i]);
+      if (d === undefined) {
+        d = v;
+      } else {
+        d = opSmoothUnion(d, v, 0.1);
+      }
+    }
+    return d;
+  };
+}
+
 const group = new Group();
 let fallingObject;
 
@@ -277,6 +311,8 @@ function randomize() {
   // const material = new MeshNormalMaterial({ wireframe: !true });
   const p = new Vector3();
 
+  const blobFn = generateBlobFn();
+
   const q = new Vector2(0.3, 0.15);
   const box = new Vector3(0.25, 0.25, 0.25);
   const cylRadius = randomInRange(0.1, 0.2);
@@ -286,6 +322,7 @@ function randomize() {
     (p) => sdOctahedron(p, 0.4),
     (p) => sdRoundBox(p, box, 0.01),
     (p) => sdRoundedCylinder(p, cylRadius, cylRadius, 0.25),
+    (p) => blobFn(p),
   ];
   let dFn = fns[Math.floor(Math.random() * fns.length)];
 
