@@ -11,7 +11,6 @@ import {
   RGBFormat,
   Raycaster,
   Vector2,
-  LinearMipmapLinearFilter,
   LinearFilter,
 } from "../third_party/three.module.js";
 import { ScottGray2D } from "./scott-gray.js";
@@ -64,8 +63,8 @@ function onMouseMove(event) {
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 }
-window.addEventListener("pointermove", onMouseMove, false);
-window.addEventListener("pointerdown", onMouseMove, false);
+renderer.domElement.addEventListener("pointermove", onMouseMove, false);
+renderer.domElement.addEventListener("pointerdown", onMouseMove, false);
 
 const LAYERS = 20;
 const layers = [];
