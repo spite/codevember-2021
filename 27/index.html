@@ -13,36 +13,60 @@
         width: 100%;
         height: 100%;
         display: flex;
-        align-items: center;
         justify-content: center;
-        color: black;
-        text-shadow: 0 0 1px white;
+        align-items: center;
+        color: white;
         z-index: 100;
-        font-size: 3em;
+      }
+      #generating p {
+        font-size: 1em;
+        background-color: #0a0f15;
+        padding: 1em;
+        font-weight: bold;
+      }
+      #overlay {
+        cursor: pointer;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        z-index: 200;
+        pointer-events: auto;
+      }
+      #overlay p {
+        font-size: 1em;
+        background-color: #0a0f15;
+        padding: 1em;
+        font-weight: bold;
       }
     </style>
   </head>
   <body>
-    <div id="generating">Generating...</div>
+    <div id="generating"><p>Generating...</p></div>
     <div id="info">
       <h2>Codevember 2021</h2>
       <h1>27. Fragment</h1>
       <p>
         Click and drag to move the camera.<br />
         Press space to stop the animation.<br />
-        Press R to randomize.<br />
-        Press B to break.
+        Press R/tap to drop a new object.<br />
       </p>
       <p>
         <button id="pauseBtn">Pause</button>
-        <button id="randomizeBtn">Randomize</button>
-        <button id="breakBtn">Break</button>
+        <button id="randomizeBtn">Drop object</button>
       </p>
       <p>
         Made with <a target="blank" href="https://threejs.org/">three.js</a>.
       </p>
     </div>
+    <div id="overlay"><p>Click to drop</p></div>
     <footer><a href="../">More Codevember</a></footer>
   </body>
+  <script src="../third_party/ammo.wasm.js"></script>
   <script src="main.js" type="module"></script>
 </html>
