@@ -58,7 +58,7 @@ import {
   seaside,
 } from "../modules/palettes.js";
 
-renderer.outputEncoding = RGBEEncoding;
+// renderer.outputEncoding = RGBEEncoding;
 renderer.toneMapping = ACESFilmicToneMapping;
 
 const palettes = [warm, natural, natural2, circus, circus2, warm2, seaside];
