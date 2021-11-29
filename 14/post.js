@@ -155,6 +155,7 @@ class Post {
       wrapT: ClampToEdgeWrapping,
     });
 
+    this.bloomPass = new BloomPass(1, 5);
   }
 
   setSize(w, h) {
