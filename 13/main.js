@@ -78,7 +78,7 @@ window.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
     running = !running;
   }
-  if (e.code === "KeyM") {
+  if (e.code === "KeyT") {
     toggleMode();
   }
   if (e.code === "KeyF") {
