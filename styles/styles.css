@@ -11,10 +11,6 @@ html {
   font-size: 14px;
 }
 
-body {
-  padding: 2em;
-}
-
 #index {
   color: #202020;
   font-size: 1rem;
@@ -25,7 +21,7 @@ body {
 }
 
 #index h1 {
-  margin-bottom: 1em;
+  padding: 1em;
 }
 
 #index ul {
@@ -33,8 +29,13 @@ body {
 }
 
 a {
+  font-weight: bold;
   text-decoration: none;
   color: inherit;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 a:hover {
@@ -53,18 +54,37 @@ canvas {
 
 #info {
   position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
+  left: 0.5em;
+  top: 0.5em;
   pointer-events: none;
   z-index: 10;
-  padding: 2em;
+  padding: 1.5em;
   color: white;
   text-shadow: 1px 1px black;
+  border-radius: 1em;
 }
 
 #info a {
   color: inherit;
+}
+
+#info p:last-child {
+  margin-bottom: 0;
+}
+
+.contrast #info *,
+.contrast footer * {
+  text-shadow: none;
+  color: black;
+}
+
+.contrast #info button {
+  border-color: black;
+}
+
+.contrast #info button:hover {
+  background-color: rgb(80, 80, 80);
+  color: white;
 }
 
 #info h1 {
@@ -96,10 +116,14 @@ button {
   margin-right: 0.5em;
   pointer-events: auto;
   text-shadow: 1px 1px black;
+  font-weight: bold;
 }
 
-button:hover {
-  background-color: gray;
+button:hover,
+#info button:hover {
+  background-color: rgb(180, 180, 180);
+  color: black;
+  text-shadow: none;
 }
 
 #info a {
@@ -114,4 +138,9 @@ footer {
   z-index: 10;
   color: white;
   text-shadow: 1px 1px black;
+}
+
+.contact {
+  padding: 1em;
+  font-size: 2em;
 }

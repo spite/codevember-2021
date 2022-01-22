@@ -6,131 +6,127 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
     <link href="./styles/styles.css" rel="stylesheet" />
     <style>
-      
-      ul {
-        display: inline-block;
+      div.cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(512px, 1fr));
       }
-      li {
-        width: calc((100vw - 80px - 6px)/3);
-        height: calc((100vw - 80px - 6px)/4.6 + 4em);
-        float: left;
-        padding-bottom: 4em;
-        position: relative;
-        margin: 2px;
-      }
-      @media (max-width: 1200px) { 
-        li {
-          width: calc((100vw - 80px - 4px)/2);
-          height: calc((100vw - 80px - 4px)/3 + 4em);
-        }
-      }
-      @media (max-width: 600px) { 
-       li {
-          width: calc((100vw - 80px - 2px));
-          height: calc((100vw - 80px - 2px)/1.5 + 4em);
-        }
-      }
-      li a {
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: top center;
+      div.cards div::before {
+        content: "";
         display: block;
-        width: 100%;
-        height: 100%;
-        position: absolute;
+        padding-bottom: 80%;
       }
-      li a h2 {
+      div.cards div {
+        background-size: cover;
+        background-position: 50% 50%;
+        position: relative;
+        filter: grayscale(0.2);
+        transition: filter ease-in-out 200ms;
+      }
+      div.cards div:hover {
+        filter: grayscale(0);
+      }
+      div.cards div a {
         position: absolute;
         left: 0;
-        bottom: 1.5em;
-        margin: 0;
-        padding: 0;
+        bottom: 0;
+        font-size: 1em;
+        right: 0;
+        top: 0;
+        display: flex;
+        align-items: end;
+        justify-content: center;
+        padding: 2em;
       }
-      .day1 a {
+      div.cards .contrast {
+        color:white;
+        text-shadow: 1px 1px black;
+      }
+      .day1 {
         background-image: url(screenshots/1.jpg);
       }
-      .day2 a {
+      .day2 {
         background-image: url(screenshots/2.jpg);
+        
       }
-      .day3 a {
+      .day3 {
         background-image: url(screenshots/3.jpg);
       }
-      .day4 a {
+      .day4 {
         background-image: url(screenshots/4.jpg);
       }
-      .day5 a {
+      .day5 {
         background-image: url(screenshots/soon.jpg);
       }
-      .day6 a {
+      .day6 {
         background-image: url(screenshots/6.jpg);
       }
-      .day7 a {
+      .day7 {
         background-image: url(screenshots/7.jpg);
       }
-      .day8 a {
+      .day8 {
         background-image: url(screenshots/8.jpg);
       }
-      .day9 a {
+      .day9 {
         background-image: url(screenshots/9.jpg);
       }
-      .day10 a {
+      .day10 {
         background-image: url(screenshots/10.jpg);
       }
-      .day11 a {
+      .day11 {
         background-image: url(screenshots/11.jpg);
       }
-      .day12 a {
+      .day12 {
         background-image: url(screenshots/12.jpg);
       }
-      .day13 a {
+      .day13 {
         background-image: url(screenshots/13.jpg);
       }
-      .day14 a {
+      .day14 {
         background-image: url(screenshots/14.jpg);
       }
-      .day15 a {
+      .day15 {
         background-image: url(screenshots/soon.jpg);
       }
-      .day16 a {
+      .day16 {
         background-image: url(screenshots/16.jpg);
       }
-      .day17 a {
+      .day17 {
         background-image: url(screenshots/17.jpg);
       }
-      .day18 a {
+      .day18 {
         background-image: url(screenshots/18.jpg);
       }
-      .day19 a {
+      .day19 {
         background-image: url(screenshots/19.jpg);
       }
-      .day20 a {
+      .day20 {
         background-image: url(screenshots/soon.jpg);
       }
-      .day21 a {
+      .day21 {
         background-image: url(screenshots/21.jpg);
       }
-      .day22 a {
+      .day22 {
         background-image: url(screenshots/22.jpg);
       }
-      .day23 a {
+      .day23 {
         background-image: url(screenshots/23.jpg);
       }
-      .day24 a {
+      .day24 {
         background-image: url(screenshots/24.jpg);
       }
-      .day25 a {
+      .day25 {
         background-image: url(screenshots/25.jpg);
       }
-      .day26 a {
+      .day26 {
         background-image: url(screenshots/26.jpg);
       }
-      .day27 a {
+      .day27 {
         background-image: url(screenshots/27.jpg);
       }
-      .day28 a {
+      .day28 {
         background-image: url(screenshots/28.jpg);
       }
-      .day29 a {
+      .day29 {
         background-image: url(screenshots/29.jpg);
       }
     </style>
@@ -138,45 +134,47 @@
   <body>
     <div id="index">
       <h1>Codevember 2021</h1>
-      <ul>
-        <li class="day1"><a href="./1"><h2>1. triangle</h2></a></li>
-        <li class="day2"><a href="./2"><h2>2. texture</h2></a></li>
-        <li class="day3"><a href="./3"><h2>3. avoidance</h2></a></li>
-        <li class="day4"><a href="./4"><h2>4. chaos</h2></a></li>
-        <li class="day5">
+      <div class="cards">
+        <div class="day1 contrast"><a href="./1"><h2>1. triangle</h2></a></div>
+        <div class="day2 contrast"><a href="./2"><h2>2. texture</h2></a></div>
+        <div class="day3 contrast"><a href="./3"><h2>3. avoidance</h2></a></div>
+        <div class="day4 contrast"><a href="./4"><h2>4. chaos</h2></a></div>
+        <div class="day5">
           <a href="./5"><h2><strike>5. growth</strike></h2></a>
-        </li>
-        <li class="day6"><a href="./6"><h2>6. glitch</h2></a></li>
-        <li class="day7"><a href="./7"><h2>7. stone</h2></a></li>
-        <li class="day8"><a href="./8"><h2>8. ribbon</h2></a></li>
-        <li class="day9"><a href="./9"><h2>9. motion</h2></a></li>
-        <li class="day10"><a href="./10"><h2>10. surface</h2></a></li>
-        <li class="day11"><a href="./11"><h2>11. speed</h2></a></li>
-        <li class="day12"><a href="./12"><h2>12. volume</h2></a></li>
-        <li class="day13"><a href="./13"><h2>13. light</h2></a></li>
-        <li class="day14"><a href="./14"><h2>14. letter</h2></a></li>
-        <li class="day15">
+        </div>
+        <div class="day6 contrast"><a href="./6"><h2>6. glitch</h2></a></div>
+        <div class="day7 contrast"><a href="./7"><h2>7. stone</h2></a></div>
+        <div class="day8 contrast"><a href="./8"><h2>8. ribbon</h2></a></div>
+        <div class="day9 contrast"><a href="./9"><h2>9. motion</h2></a></div>
+        <div class="day10 contrast"><a href="./10"><h2>10. surface</h2></a></div>
+        <div class="day11 contrast"><a href="./11"><h2>11. speed</h2></a></div>
+        <div class="day12 contrast"><a href="./12"><h2>12. volume</h2></a></div>
+        <div class="day13 contrast"><a href="./13"><h2>13. light</h2></a></div>
+        <div class="day14 contrast"><a href="./14"><h2>14. letter</h2></a></div>
+        <div class="day15">
           <a href="./15"><strike><h2>15. loom</strike></h2></a>
-        </li>
-        <li class="day16"><a href="./16"><h2>16. fire</h2></a></li>
-        <li class="day17"><a href="./17"><h2>17. attraction</h2></a></li>
-        <li class="day18"><a href="./18"><h2>18. line</h2></a></li>
-        <li class="day19"><a href="./19"><h2>19. donut</h2></a></li>
-        <li class="day20">
+        </div>
+        <div class="day16 contrast"><a href="./16"><h2>16. fire</h2></a></div>
+        <div class="day17 contrast"><a href="./17"><h2>17. attraction</h2></a></div>
+        <div class="day18 contrast"><a href="./18"><h2>18. line</h2></a></div>
+        <div class="day19 contrast"><a href="./19"><h2>19. donut</h2></a></div>
+        <div class="day20">
           <a href="./20"><strike><h2>20. mechanical</strike></h2></a>
-        </li>
-        <li class="day21"><a href="./21"><h2>21. curve</h2></a></li>
-        <li class="day22"><a href="./22"><h2>22. weight</h2></a></li>
-        <li class="day23"><a href="./23"><h2>23. equilibrium</h2></a></li>
-        <li class="day24"><a href="./24"><h2>24. chicken</h2></a></li>
-        <li class="day25"><a href="./25"><h2>25. structure</h2></a></li>
-        <li class="day26"><a href="./26"><h2>26. flow</h2></a></li>
-        <li class="day27"><a href="./27"><h2>27. fragment</h2></a></li>
-        <li class="day28"><a href="./28"><h2>28. pattern</h2></a></li>
-        <li class="day29"><a href="./29"><h2>29. grass</h2></a></li>
-      </ul>
+        </div>
+        <div class="day21 contrast"><a href="./21"><h2>21. curve</h2></a></div>
+        <div class="day22 contrast"><a href="./22"><h2>22. weight</h2></a></div>
+        <div class="day23 contrast"><a href="./23"><h2>23. equilibrium</h2></a></div>
+        <div class="day24"><a href="./24"><h2>24. chicken</h2></a></div>
+        <div class="day25"><a href="./25"><h2>25. structure</h2></a></div>
+        <div class="day26 contrast"><a href="./26"><h2>26. flow</h2></a></div>
+        <div class="day27 contrast"><a href="./27"><h2>27. fragment</h2></a></div>
+        <div class="day28 contrast"><a href="./28"><h2>28. pattern</h2></a></div>
+        <div class="day29 contrast"><a href="./29"><h2>29. grass</h2></a></div>
+      </div>
     </div>
-    <p><a href="https://github.com/spite/codevember-2021">GitHub repo</a></p>
-    <p>Follow me on <a href="https://twitter.com/thespite">twitter</a></p>
+    <div class="contact">
+      <p><a href="https://github.com/spite/codevember-2021">GitHub repo</a></p>
+      <p>Follow me on <a href="https://twitter.com/thespite">twitter</a></p>
+  </div>
   </body>
 </html>
