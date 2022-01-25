@@ -8,7 +8,7 @@
     <style>
       div.cards {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(512px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(min(100vw, 512px), 1fr));
       }
       div.cards div::before {
         content: "";
@@ -29,13 +29,21 @@
         position: absolute;
         left: 0;
         bottom: 0;
+        text-decoration: none;
         font-size: 1em;
         right: 0;
         top: 0;
         display: flex;
+        opacity: 0;
+        transition: opacity ease-in-out 200ms;
         align-items: end;
         justify-content: center;
         padding: 2em;
+      }
+      div.cards div:focus a,
+      div.cards div:active a,
+      div.cards div:hover a {
+        opacity: 1;
       }
       div.cards .contrast {
         color:white;
