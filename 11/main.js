@@ -209,11 +209,11 @@ function render() {
   renderer.setAnimationLoop(render);
 }
 
-function myResize(w, h) {
+function myResize(w, h, dpr) {
   for (const trail of trails) {
     trail.setSize(w, h);
   }
-  post.setSize(w, h);
+  post.setSize(w * dpr, h * dpr);
 }
 addResize(myResize);
 
