@@ -111,6 +111,7 @@ function rotation(deltaX, deltaY) {
 window.addEventListener("pointermove", (e) => {
   mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  if (!running) return;
 
   if (dragging) {
     const deltaX = e.clientX - dragStart.x;
@@ -125,6 +126,8 @@ window.addEventListener("pointermove", (e) => {
 window.addEventListener("pointerdown", (e) => {
   mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  if (!running) return;
+
   dragging = true;
   if (dragging) {
     dragStart.set(e.clientX, e.clientY);
@@ -150,15 +153,35 @@ let prevTime = performance.now();
 let frames = 0;
 let capturing = false;
 
+let running = true;
+
+function toggleRunning() {
+  running = !running;
+  controls.enabled = !running;
+}
+
+window.addEventListener("keydown", (e) => {
+  if (e.code === "Space") {
+    toggleRunning();
+  }
+});
+
+document.querySelector("#pauseBtn").addEventListener("click", (e) => {
+  toggleRunning();
+});
+
 function render() {
   const t = performance.now();
   const dt = (t - prevTime) / 1000;
   prevTime = t;
 
-  simulation.simulate(renderer, dt, curQuaternion);
-  rotation(dx, dy);
-  dx *= 0.95;
-  dy *= 0.95;
+  if (running) {
+    simulation.simulate(renderer, dt, curQuaternion);
+
+    rotation(dx, dy);
+    dx *= 0.95;
+    dy *= 0.95;
+  }
 
   renderer.render(scene, camera);
   // capture(renderer.domElement);
