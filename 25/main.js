@@ -275,9 +275,9 @@ function render() {
   renderer.setAnimationLoop(render);
 }
 
-addResize((w, h) => {
-  ssao.setSize(w, h);
-  post.setSize(w, h);
+addResize((w, h, dpr) => {
+  ssao.setSize(w * dpr, h * dpr);
+  post.setSize(w * dpr, h * dpr);
 });
 
 camera.position.set(0, 0, 3);
