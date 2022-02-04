@@ -10,13 +10,12 @@ import {
   SpotLight,
   AmbientLight,
   sRGBEncoding,
-  RawShaderMaterial,
-  GLSL3,
 } from "../third_party/three.module.js";
 import { Ribbon, randomizeFunction } from "./ribbon.js";
 import { GradientLinear } from "../modules/gradient-linear.js";
 import { natural, natural2, seaside } from "../modules/palettes.js";
 import { Post } from "./post.js";
+// import { capture } from "../modules/capture.js";
 
 renderer.setClearColor(0x202020, 1);
 
@@ -110,11 +109,13 @@ function render() {
 
   post.render();
 
+  // capture(renderer.domElement);
+
   renderer.setAnimationLoop(render);
 }
 
-function myResize(w, h) {
-  post.setSize(w, h);
+function myResize(w, h, dpr) {
+  post.setSize(w * dpr, h * dpr);
 }
 
 addResize(myResize);
