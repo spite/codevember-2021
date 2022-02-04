@@ -71,8 +71,8 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-function myResize(w, h) {
-  post.setSize(w, h);
+function myResize(w, h, dpr) {
+  post.setSize(w * dpr, h * dpr);
 }
 
 addResize(myResize);
