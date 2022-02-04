@@ -47,7 +47,7 @@ void main() {
   float d = (length(vel.xyz) / .025);
   d = smoothstep(.25, .65, d) ;
   vColor = texture(gradient, vec2(d, 0.)).rgb; 
-  gl_PointSize = 2. * dpr * vel.w / gl_Position.z;
+  gl_PointSize = 6. * dpr * vel.w / gl_Position.z;
 }`;
 
 const particleFs = `precision highp float;
