@@ -86,8 +86,6 @@ scene.fog = new FogExp2(0x400000, 0.05);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = PCFSoftShadowMap;
 
-const envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
-
 function generateVoronoi(data, width, height, depth, worley) {
   let min = Number.MAX_SAFE_INTEGER;
   let max = Number.MIN_SAFE_INTEGER;
@@ -240,7 +238,6 @@ scene.add(group);
 const material = new MeshStandardMaterial({
   color: 0xb70000,
   wireframe: !true,
-  envMap,
   envMapIntensity: 0.01,
   roughness: 0.1,
   metalness: 0,
@@ -599,6 +596,9 @@ addResize(myResize);
 resize();
 
 async function init() {
+  const envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
+  material.envMap = envMap;
+
   Ammo = await initPhysics();
 
   const sx = 100;
