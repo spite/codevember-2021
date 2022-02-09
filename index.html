@@ -140,11 +140,23 @@
       .day30 {
         background-image: url(screenshots/soon.jpg);
       }
+      #index {
+        position: relative;
+      }
+      #index h1 {
+        margin-right: 4em;
+      }
+      #index tweet-button {
+        position:absolute;
+        right: 1.5em;
+        top: 1.5em;
+      }
     </style>
   </head>
   <body>
     <div id="index">
-      <h1>Codevember 2021</h1>
+      <h1>Codevember 2021
+      <tweet-button></tweet-button></h1>
       <div class="cards">
         <div class="day1 contrast"><a href="./1"><h2>1. triangle</h2></a></div>
         <div class="day2 contrast"><a href="./2"><h2>2. texture</h2></a></div>
@@ -191,4 +203,5 @@
       <p>Follow me on <a href="https://twitter.com/thespite">twitter</a></p>
   </div>
   </body>
+  <script src="js/tweet.js" type="module"></script>
 </html>
