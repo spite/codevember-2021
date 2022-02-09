@@ -7,7 +7,6 @@ import {
 } from "../modules/renderer.js";
 import {
   BoxBufferGeometry,
-  sRGBEncoding,
   InstancedMesh,
   DynamicDrawUsage,
   Object3D,
@@ -28,7 +27,6 @@ import {
   seaside,
   warm3,
 } from "../modules/palettes.js";
-import { initHdrEnv } from "../modules/hdri.js";
 import { perlin2 } from "../third_party/perlin.js";
 import { SSAO } from "./SSAO.js";
 import { Post } from "./post.js";
@@ -132,9 +130,6 @@ class Square {
 
 const palettes = [natural, natural2, circus, circus2, warm2, seaside, warm3];
 
-const envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
-envMap.encodingg = sRGBEncoding;
-
 let square;
 let leafSquares = [];
 const squares = [];
@@ -179,10 +174,6 @@ function randomize() {
 
   const mat = new MeshBasicMaterial({
     wireframe: !true,
-    // roughness: 0.2,
-    // metalness: 0,
-    // envMap: envMap,
-    // envMapIntensity: 0.4,
   });
 
   if (mesh) {
