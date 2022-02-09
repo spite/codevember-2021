@@ -82,9 +82,6 @@ const attraction = new Attraction(point, 200, 0.02);
 const repulsion = new Attraction(point, 1, -0.4);
 const collide = new Collision();
 
-const envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
-envMap.encodingg = sRGBEncoding;
-
 let count = 800;
 const maxCount = 2000;
 
@@ -93,7 +90,6 @@ const geometry = new IcosahedronBufferGeometry(4, 3);
 const material = new MeshStandardMaterial({
   roughness: 0.2,
   metalness: 0,
-  envMap,
   envMapIntensity: 0.05,
 });
 const mesh = new InstancedMesh(geometry, material, maxCount);
@@ -267,5 +263,11 @@ function myResize(w, h, dpr) {
 }
 addResize(myResize);
 
-resize();
-render();
+async function init() {
+  const envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
+  material.envMap = envMap;
+  resize();
+  render();
+}
+
+init();
