@@ -35,15 +35,11 @@ renderer.sortObjects = false;
 
 controls.enabled = false;
 
-const envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
-envMap.encodingg = sRGBEncoding;
-
 const mat = new MeshStandardMaterial({
   roughness: 0.7,
   metalness: 0.1,
   color: 0x101010,
   wireframe: !true,
-  envMap,
 });
 
 let dx = 0;
@@ -195,7 +191,13 @@ function render() {
   renderer.setAnimationLoop(render);
 }
 
-render();
+async function init() {
+  const envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
+  mat.envMap = envMap;
+  render();
+}
+
+init();
 
 // window.start = () => {
 //   frames = 0;
