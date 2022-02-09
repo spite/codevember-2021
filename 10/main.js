@@ -28,12 +28,9 @@ renderer.shadowMap.enabled = true;
 // renderer.outputEncoding = sRGBEncoding;
 renderer.shadowMap.type = PCFSoftShadowMap;
 
-const envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
-
 const size = 80;
 const material = new MeshStandardMaterial({
   wireframe: !true,
-  envMap,
   envMapIntensity: 0.01,
   roughness: 0.1,
   metalness: 0,
@@ -213,7 +210,14 @@ function myResize(w, h, dpr) {
 addResize(myResize);
 
 resize();
-render();
+
+async function init() {
+  const envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
+  material.envMap = envMap;
+  render();
+}
+
+init();
 
 // window.start = () => {
 //   frames = 0;
