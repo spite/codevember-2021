@@ -174,6 +174,8 @@ floor.position.y = -0.01;
 floor.rotation.x = -Math.PI / 2;
 scene.add(floor);
 
+let envMap;
+
 function riseUp(geo) {
   const indices = geo.index.array;
   const positions = geo.attributes.position.array;
@@ -233,6 +235,7 @@ function riseUp(geo) {
       metalness: 0.1,
       color: gradient.getAt(g),
       wireframe: !true,
+      envMap,
       envMapIntensity: 0.1,
     });
     mat.flatShading = true;
@@ -586,8 +589,7 @@ function myResize(w, h, dpr) {
 addResize(myResize);
 
 async function init() {
-  const envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
-  mat.envMap = envMap;
+  envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
   resize();
   render();
 }
