@@ -157,9 +157,6 @@ function buildPrism(a, b, c) {
   return { geometry: geo, height: Math.max(Math.max(ha, hb), hc) };
 }
 
-const envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
-envMap.encodingg = sRGBEncoding;
-
 const light = new DirectionalLight(0xffffff, 0.5);
 light.position.set(0.24424732787273323, 1.183316847807905, -2.457539865410103);
 scene.add(light);
@@ -236,7 +233,6 @@ function riseUp(geo) {
       metalness: 0.1,
       color: gradient.getAt(g),
       wireframe: !true,
-      envMap,
       envMapIntensity: 0.1,
     });
     mat.flatShading = true;
@@ -589,5 +585,11 @@ function myResize(w, h, dpr) {
 }
 addResize(myResize);
 
-resize();
-render();
+async function init() {
+  const envMap = await initHdrEnv("studio_small_03_1k.hdr", renderer);
+  mat.envMap = envMap;
+  resize();
+  render();
+}
+
+init();
