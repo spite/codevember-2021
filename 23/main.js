@@ -543,7 +543,14 @@ window.addEventListener("pointerdown", (e) => {
 
 const tmp = new Vector2();
 
+let risePrevTime = performance.now();
+
 function render() {
+  const riseNow = performance.now();
+  // elapsed time in 60fps frames: the rise animations below were per-frame
+  const delta = Math.min(riseNow - risePrevTime, 100) / (1000 / 60);
+  risePrevTime = riseNow;
+
   if (relaxing) {
     relaxing = relaxWeighted(geo, neighbours) > 0.1;
     if (!relaxing && !rising) {
@@ -557,11 +564,12 @@ function render() {
     rising = false;
   }
   if (prismGroup.position.y < 0) {
-    prismGroup.position.y += 0.01;
+    prismGroup.position.y += 0.01 * delta;
   }
   for (const prism of prisms) {
     if (prism.position.y < 0) {
-      prism.position.y += -prism.position.y * 0.1;
+      // exponential ease toward 0, framerate independent
+      prism.position.y += -prism.position.y * (1 - (1 - 0.1) ** delta);
     }
   }
   if (point) {
@@ -572,7 +580,7 @@ function render() {
       // const d = (1 / Math.exp(tmp.length() * 2, 20)) * prism.userData["height"];
       const d = prism.userData["height"] - tmp.length() + 0.25;
       if (prism.position.y > -d) {
-        prism.position.y += (-d - prism.position.y) * 0.4;
+        prism.position.y += (-d - prism.position.y) * (1 - (1 - 0.4) ** delta);
       }
     }
   }

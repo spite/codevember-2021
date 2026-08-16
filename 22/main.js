@@ -229,7 +229,10 @@ function render() {
   light.position.copy(point);
   center.position.copy(point);
   center.lookAt(prevPoint);
-  t.copy(point).sub(prevPoint);
+  // distance moved since the last frame, normalised to a 60fps frame -- the
+  // squash below is driven by pointer speed, which would otherwise shrink as
+  // the framerate rises
+  t.copy(point).sub(prevPoint).multiplyScalar(1 / Math.max(delta, 0.05));
   center.scale.x = clamp(1 - t.length() * 2, 0.1, 10);
   center.scale.y = clamp(1 - t.length() * 2, 0.1, 10);
   center.scale.z = 1 + t.length() * 10;

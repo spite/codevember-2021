@@ -129,8 +129,10 @@ let frames = 0;
 function render() {
   const t = performance.now();
   const dt = (t - prevTime) / 1000;
+  // elapsed time in 60fps frames
+  const delta = Math.min(dt, 0.1) * 60;
 
-  currentCut += (cut - currentCut) * 0.1;
+  currentCut += (cut - currentCut) * (1 - (1 - 0.1) ** delta);
   volume.mesh.material.uniforms.cut.value = currentCut;
 
   if (running) {
