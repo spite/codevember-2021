@@ -143,11 +143,28 @@ let running = true;
 camera.position.set(0, 0, 2);
 camera.lookAt(scene.position);
 
+// the spring system is integrated with a fixed 0.16 step per 60fps frame, so it
+// runs on an accumulator rather than once per drawn frame
+const STEP = 1000 / 60;
+const MAX_STEPS = 4;
+let accumulator = 0;
+let prevTime = performance.now();
+
 function render() {
   plane.lookAt(camera.position);
 
+  const now = performance.now();
+  accumulator += Math.min(now - prevTime, 200);
+  prevTime = now;
+
   if (running) {
-    distort.update(0.16);
+    let steps = 0;
+    while (accumulator >= STEP && steps < MAX_STEPS) {
+      distort.update(0.16);
+      accumulator -= STEP;
+      steps++;
+    }
+    if (steps === MAX_STEPS) accumulator = 0;
   }
 
   // renderer.render(scene, camera);

@@ -111,12 +111,19 @@ const curPoint = new Vector2(0, 0);
 let time = 0;
 let prevTime = performance.now();
 
+const SIM_STEP = 1 / 60;
+const MAX_SIM_STEPS = 4;
+let simAccumulator = 0;
+
 function render() {
   if (running) {
     const t = performance.now();
     const dt = (t - prevTime) / 1000;
     time += dt;
-    prevTime = time;
+    // prevTime tracks the timestamp, not the accumulated time
+    prevTime = t;
+    // elapsed time in 60fps frames
+    const delta = Math.min(dt, 0.1) * 60;
 
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObject(layers[0]);
@@ -125,13 +132,22 @@ function render() {
     if (intersects.length) {
       point.copy(intersects[0].uv);
     }
-    curPoint.lerp(point, 0.1);
+    curPoint.lerp(point, 1 - (1 - 0.1) ** delta);
 
     scottGray.simulation.shader.uniforms.pointer.value.copy(curPoint);
 
-    for (let i = 0; i < 10; i++) {
-      scottGray.step();
+    // the reaction-diffusion runs 10 steps per 60fps frame; keep that rate
+    // rather than tying it to how often we draw
+    simAccumulator += Math.min(dt, 0.2);
+    let simSteps = 0;
+    while (simAccumulator >= SIM_STEP && simSteps < MAX_SIM_STEPS) {
+      for (let i = 0; i < 10; i++) {
+        scottGray.step();
+      }
+      simAccumulator -= SIM_STEP;
+      simSteps++;
     }
+    if (simSteps === MAX_SIM_STEPS) simAccumulator = 0;
 
     layers[currentLayer].copy(scottGray.texture);
     currentLayer = (currentLayer + 1) % layers.length;

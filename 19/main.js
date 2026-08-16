@@ -171,12 +171,17 @@ function render() {
   const dt = (t - prevTime) / 1000;
   prevTime = t;
 
+  // elapsed time in 60fps frames
+  const delta = Math.min(dt, 0.1) * 60;
+
   if (running) {
     simulation.simulate(renderer, dt, curQuaternion);
 
-    rotation(dx, dy);
-    dx *= 0.95;
-    dy *= 0.95;
+    // the drag inertia spins down over the same time at any framerate
+    rotation(dx * delta, dy * delta);
+    const damping = 0.95 ** delta;
+    dx *= damping;
+    dy *= damping;
   }
 
   renderer.render(scene, camera);

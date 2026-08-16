@@ -211,12 +211,20 @@ document.querySelector("#randomizeBtn").addEventListener("click", (e) => {
 });
 
 let prevTime = performance.now();
+// prevTime is consumed further down to drive the physics, so the smoothing
+// keeps its own clock
+let prevSmoothTime = performance.now();
 
 function render() {
   plane.lookAt(camera.position);
 
+  const now = performance.now();
+  // elapsed time in 60fps frames, so the smoothing is framerate independent
+  const delta = Math.min(now - prevSmoothTime, 100) / (1000 / 60);
+  prevSmoothTime = now;
+
   hitPoint();
-  point.lerp(nextPoint, 0.1);
+  point.lerp(nextPoint, 1 - (1 - 0.1) ** delta);
 
   light.position.copy(point);
   center.position.copy(point);

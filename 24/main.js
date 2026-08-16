@@ -90,13 +90,16 @@ function render() {
 
   const t = performance.now();
   const dt = (t - prevTime) / 1000;
+  // elapsed time in 60fps frames, so the smoothing below settles over the same
+  // amount of time whatever the framerate is
+  const delta = Math.min(dt, 0.1) * 60;
 
   if (running) {
     time += dt;
     invalidated = true;
   }
 
-  curPoint.lerp(point, 0.1);
+  curPoint.lerp(point, 1 - (1 - 0.1) ** delta);
 
   if (invalidated) {
     volume.mesh.material.uniforms.mousePosition.value.copy(curPoint);

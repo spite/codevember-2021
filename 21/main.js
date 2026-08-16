@@ -71,17 +71,36 @@ const curve = new Curve(100, 1);
 scene.add(curve.tubeMesh);
 
 const up = new Vector3(0, 1, 0);
+
+// the curve grows by one step per 60fps frame, so it advances on a fixed
+// accumulator rather than once per drawn frame
+const STEP = 1000 / 60;
+const MAX_STEPS = 4;
+let accumulator = 0;
+let prevTime = performance.now();
+const rot = new Matrix4();
+
 function render() {
   plane.lookAt(camera.position);
+
+  const now = performance.now();
+  accumulator += Math.min(now - prevTime, 200);
+  prevTime = now;
 
   hitPoint();
 
   if (running) {
-    curve.tubeMesh.rotation.y += 0.01;
-    const rot = new Matrix4().makeRotationY(-curve.tubeMesh.rotation.y);
-    point.applyMatrix4(rot);
-    curve.update(point, up);
-    curve.step();
+    let steps = 0;
+    while (accumulator >= STEP && steps < MAX_STEPS) {
+      curve.tubeMesh.rotation.y += 0.01;
+      rot.makeRotationY(-curve.tubeMesh.rotation.y);
+      point.applyMatrix4(rot);
+      curve.update(point, up);
+      curve.step();
+      accumulator -= STEP;
+      steps++;
+    }
+    if (steps === MAX_STEPS) accumulator = 0;
     curve.render();
   }
 

@@ -140,19 +140,36 @@ document.querySelector("#autoBtn").addEventListener("click", (e) => {
 const rot = new Matrix4();
 const tmp = new Vector3();
 
+// the simulation is tuned for one 0.01 step per 60fps frame, so it runs on a
+// fixed 60Hz accumulator rather than once per drawn frame
+const SIM_STEP = 1 / 60;
+const MAX_SIM_STEPS = 4;
+let simAccumulator = 0;
+
 function render() {
   hitPlane.lookAt(camera.position);
 
   const t = performance.now();
   const dt = (t - prevTime) / 1000;
   prevTime = t;
+  // elapsed time in 60fps frames
+  const delta = Math.min(dt, 0.1) * 60;
 
   if (running) {
-    curPoint.lerp(point, 0.1);
+    curPoint.lerp(point, 1 - (1 - 0.1) ** delta);
     simulation.mesh.rotation.y += dt / 10;
     rot.makeRotationY(-simulation.mesh.rotation.y);
-    tmp.copy(curPoint);
-    simulation.simulate(renderer, 0.01, tmp.applyMatrix4(rot));
+    // applyMatrix4 mutates tmp, so rotate once and reuse it across the steps
+    tmp.copy(curPoint).applyMatrix4(rot);
+
+    simAccumulator += Math.min(dt, 0.2);
+    let steps = 0;
+    while (simAccumulator >= SIM_STEP && steps < MAX_SIM_STEPS) {
+      simulation.simulate(renderer, 0.01, tmp);
+      simAccumulator -= SIM_STEP;
+      steps++;
+    }
+    if (steps === MAX_SIM_STEPS) simAccumulator = 0;
   }
 
   // renderer.render(scene, camera);

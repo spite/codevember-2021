@@ -181,10 +181,13 @@ let prevTime = performance.now();
 let time = 0;
 
 function render() {
-  curSpeed += (speed - curSpeed) * 0.1;
-
   const t = performance.now();
   const dt = t - prevTime;
+  // elapsed time in 60fps frames, so the easing below runs at a fixed rate
+  const delta = Math.min(dt, 100) / (1000 / 60);
+
+  curSpeed += (speed - curSpeed) * (1 - (1 - 0.1) ** delta);
+
   time += dt * curSpeed;
   prevTime = t;
 
@@ -197,10 +200,10 @@ function render() {
     deviceOrientationControls.update();
   } else {
     tunnel.update(tunnelTime + 0.01, target, tangentFrom);
-    tangent.lerp(tangentFrom, 0.1).normalize();
+    tangent.lerp(tangentFrom, 1 - (1 - 0.1) ** delta).normalize();
     rot.lookAt(camera.position, target, tangent);
     q.setFromRotationMatrix(rot);
-    camera.quaternion.slerp(q, 0.05);
+    camera.quaternion.slerp(q, 1 - (1 - 0.05) ** delta);
   }
 
   // renderer.render(scene, camera);
